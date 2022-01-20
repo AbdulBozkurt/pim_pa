@@ -6,9 +6,9 @@ __all__ = ["mod_add", "mod_sub", "mod_mul", "mod_inv", "mod_div", "euclidean_alg
 def normalize_params(x: int, y: int, k: int) -> Tuple[int, int, int]:
     """Normalizes the parameters of a mod arith function.
     This means the first two parameters will be converted to the corresponding representative of their congruence class
-    mod k; and k will be checked whether it is greater than 0."""
-    if k <= 0:
-        raise ValueError(f"Parameter k should not be <= 0. Given: {k}")
+    mod k; and k will be checked whether it is greater than 1."""
+    if k <= 1:
+        raise ValueError(f"Parameter k should not be <= 1. Given: {k}")
     return x % k, y % k, k
 
 
@@ -35,8 +35,9 @@ def mod_inv(x: int, k: int) -> int:
     If it isn't possible, raise ValueError."""
     x, _, k = normalize_params(x, 1, k)
     d, s, t = extended_euclidean_alg(x, k)
+    s %= k
     if d != 1:
-        raise ValueError(f"Parameters x and k must be mutually prime. GCD was {d}")
+        raise ValueError(f"Parameters x = {x} and k = {k} must be mutually prime. GCD was {d}")
     return s
 
 
