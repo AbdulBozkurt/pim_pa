@@ -6,8 +6,7 @@ from algorithm import get_daa_bits, get_naf_bits
 
 class EllipticCurve:
 
-    def __init__(self, a: field. FiniteFieldElement, b: field.FiniteFieldElement,
-                 x: field. FiniteFieldElement, y: field.FiniteFieldElement):
+    def __init__(self, a: field. FiniteFieldElement, b: field.FiniteFieldElement):
 
         e1 = field.FiniteFieldElement(-1, a.field)
         e2 = field.FiniteFieldElement(4, a.field)
@@ -26,8 +25,8 @@ class EllipticCurve:
     def double_and_add(self, n: int, p: point.PointElement):
         # TODO: implement addition and doubling in point-class
 
-        e1 = field.FiniteFieldElement(0, self.p)
-        e2 = field.FiniteFieldElement(0, self.p)
+        e1 = field.FiniteFieldElement(0, self.a)
+        e2 = field.FiniteFieldElement(0, self.a)
         result = point.PointElement(e1, e2)
         tmp = p
 
@@ -41,8 +40,8 @@ class EllipticCurve:
     def non_adjacent_form(self, n: int, p: point.PointElement):
         # TODO: implement addition and doubling in point-class
 
-        e1 = field.FiniteFieldElement(0, self.p)
-        e2 = field.FiniteFieldElement(0, self.p)
+        e1 = field.FiniteFieldElement(0, self.a)
+        e2 = field.FiniteFieldElement(0, self.a)
         result = point.PointElement(e1, e2)
         tmp = p
 
@@ -57,7 +56,12 @@ class EllipticCurve:
 if __name__ == '__main__':
     param_a = field.FiniteFieldElement(2, FiniteField(17))
     param_b = field.FiniteFieldElement(3, FiniteField(17))
+    weierstrass = EllipticCurve(param_a, param_b)
+    print(weierstrass)
+
     element1 = field.FiniteFieldElement(5, FiniteField(17))
     element2 = field.FiniteFieldElement(4, FiniteField(17))
-    p1 = EllipticCurve(param_a, param_b, element1, element2)
-    print(p1)
+    point1 = point.PointElement(element1, element2)
+
+    # weierstrass.double_and_add(20, point1)
+    # weierstrass.non_adjacent_form(20, point1)
