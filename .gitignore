@@ -130,3 +130,6 @@ dmypy.json
 
 # ignore PyCharm-shit
 .idea
+
+# ignore MacOS-shit
+.DS_Store
