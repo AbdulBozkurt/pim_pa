@@ -1,5 +1,5 @@
 import mod_arith.modarith as mod
-from finite_field import FiniteField
+from finite_field.finite_field import FiniteField
 
 
 class FiniteFieldElement:

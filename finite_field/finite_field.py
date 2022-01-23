@@ -1,4 +1,4 @@
-import prime_numbers
+import finite_field.prime_numbers as prime_numbers
 
 
 class FiniteField:
