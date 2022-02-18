@@ -20,6 +20,9 @@ class EllipticCurve:
     def __str__(self):
         return "(Curve: y^2 = x^3 + {0}x + {1})".format(self.a.e, self.b.e)
 
+    def __eq__(self, other):
+        return self.a == other.a and self.b == other.b
+
 
 if __name__ == '__main__':
     param_a = FiniteFieldElement(2, FiniteField(17))

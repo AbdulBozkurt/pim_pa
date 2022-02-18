@@ -44,6 +44,9 @@ class PointElement:
         i = FiniteFieldElement(-1, self.y.field)
         return PointElement(self.x, self.y * i, self.curve)
 
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y and self.curve == other.curve
+
     def is_on_curve(self):
 
         left = self.y * self.y
@@ -69,7 +72,6 @@ class PointElement:
         return result
 
     def non_adjacent_form(self, n: int):
-        # TODO: implement addition and doubling in point-class
 
         e1 = FiniteFieldElement(0, self.curve.a)
         e2 = FiniteFieldElement(0, self.curve.a)
@@ -85,11 +87,12 @@ class PointElement:
 
 
 if __name__ == '__main__':
-    element1 = FiniteFieldElement(3, FiniteField(17))
-    element2 = FiniteFieldElement(5, FiniteField(17))
     curve_param_a = FiniteFieldElement(2, FiniteField(17))
     curve_param_b = FiniteFieldElement(3, FiniteField(17))
     curve1 = EllipticCurve(curve_param_a, curve_param_b)
+
+    element1 = FiniteFieldElement(3, FiniteField(17))
+    element2 = FiniteFieldElement(5, FiniteField(17))
     p1 = PointElement(element1, element2, curve1)
     p2 = PointElement(element2, element1, curve1)
     print(p1.is_on_curve())
