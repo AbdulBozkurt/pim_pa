@@ -23,6 +23,9 @@ class EllipticCurve:
     def __eq__(self, other):
         return self.a == other.a and self.b == other.b
 
+    def get_points(self):
+        return
+
 
 if __name__ == '__main__':
     param_a = FiniteFieldElement(2, FiniteField(17))

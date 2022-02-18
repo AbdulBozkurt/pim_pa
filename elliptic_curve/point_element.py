@@ -5,9 +5,8 @@ from algorithm import get_daa_bits, get_naf_bits
 
 
 class PointElement:
-    # TODO: give curve element
     def __init__(self, x: FiniteFieldElement, y: FiniteFieldElement, curve: EllipticCurve):
-
+        # TODO: add z as projective coordinate
         if x.field != y.field:
             raise ValueError('The bases of  the given elements are not equal.')
         self.x = x
@@ -18,6 +17,9 @@ class PointElement:
         return "(Point: ({0}|{1}) )".format(self.x.e, self.y.e)
 
     def __add__(self, other):
+        if not self.is_on_curve() or not other.is_on_curve():
+            raise ValueError('One or more points are not on the curve.')
+
         # TODO: use this or the formulas from http://hyperelliptic.org ?
         # TODO: check which formulas are the most efficient
         if self.x != other.x:
@@ -48,17 +50,26 @@ class PointElement:
         return self.x == other.x and self.y == other.y and self.curve == other.curve
 
     def is_on_curve(self):
-
+        # TODO: eq-method in finite_field_element?
         left = self.y * self.y
         right = self.x * self.x * self.x + self.curve.a * self.x + self.curve.b
-        return left == right
+        return left.field == right.field and left.e == right.e
 
     def scalar_mul(self, n: int):
-        return
+        if not self.is_on_curve():
+            raise ValueError('The given point is not on the curve.')
+
+        tmp = self
+        for i in range(n):
+            tmp = tmp + self
+
+        return tmp
 
     def double_and_add(self, n: int):
-        # TODO: check if point is on curve
+        if not self.is_on_curve():
+            raise ValueError('The given point is not on the curve.')
 
+        # TODO: implement
         e1 = FiniteFieldElement(0, self.curve.a)
         e2 = FiniteFieldElement(0, self.curve.a)
         result = PointElement(e1, e2, self.curve)
@@ -72,7 +83,10 @@ class PointElement:
         return result
 
     def non_adjacent_form(self, n: int):
+        # if not self.is_on_curve():
+        #     raise ValueError('The given point is not on the curve.')
 
+        # TODO: implement
         e1 = FiniteFieldElement(0, self.curve.a)
         e2 = FiniteFieldElement(0, self.curve.a)
         result = PointElement(e1, e2, self.curve)
@@ -87,17 +101,19 @@ class PointElement:
 
 
 if __name__ == '__main__':
-    curve_param_a = FiniteFieldElement(2, FiniteField(17))
-    curve_param_b = FiniteFieldElement(3, FiniteField(17))
+    curve_param_a = FiniteFieldElement(2, FiniteField(13))
+    curve_param_b = FiniteFieldElement(3, FiniteField(13))
     curve1 = EllipticCurve(curve_param_a, curve_param_b)
 
-    element1 = FiniteFieldElement(3, FiniteField(17))
-    element2 = FiniteFieldElement(5, FiniteField(17))
+    element1 = FiniteFieldElement(4, FiniteField(13))
+    element2 = FiniteFieldElement(7, FiniteField(13))
     p1 = PointElement(element1, element2, curve1)
-    p2 = PointElement(element2, element1, curve1)
+    p2 = p1 + p1
+
     print(p1.is_on_curve())
     print(p2.is_on_curve())
     print(-p1)
+    print(p1+p1)
     print(p1+p2)
     print(p1-p2)
-    print(p1+p1)
+    print(p1.scalar_mul(3))
