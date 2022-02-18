@@ -6,6 +6,9 @@ from algorithm import get_daa_bits, get_naf_bits
 
 class PointElement:
     def __init__(self, x: FiniteFieldElement, y: FiniteFieldElement, curve: EllipticCurve):
+        """Initializes an PointElement by providing it with two (later three) coordinates of type
+        FiniteFieldElement and the corresponding curve. Checks first, whether the fields of the
+        given elements are equal. If they are not equal, then raise ValueError."""
         # TODO: add z as projective coordinate
         if x.field != y.field:
             raise ValueError('The bases of  the given elements are not equal.')
@@ -17,6 +20,9 @@ class PointElement:
         return "(Point: ({0}|{1}) )".format(self.x.e, self.y.e)
 
     def __add__(self, other):
+        """Adds two points to retrieve a new one.
+        Performs different calculations depending on the coordinates.
+        """
         if not self.is_on_curve() or not other.is_on_curve():
             raise ValueError('One or more points are not on the curve.')
 
@@ -40,32 +46,42 @@ class PointElement:
             raise ValueError('Point at Infinity')
 
     def __sub__(self, other):
+        """Calculates the subtraction of two points."""
         return self + (-other)
 
     def __neg__(self):
+        """Calculates the negation of a point by multiplying its y-coordinate with -1."""
         i = FiniteFieldElement(-1, self.y.field)
         return PointElement(self.x, self.y * i, self.curve)
 
     def __eq__(self, other):
+        """Checks, whether the point is equal to another one."""
         return self.x == other.x and self.y == other.y and self.curve == other.curve
 
     def is_on_curve(self):
+        """Checks, whether the point is on its elliptic curve, by inserting them
+        into the curve. If both sides of the equation are not equal,
+        then raise ValueError."""
         # TODO: eq-method in finite_field_element?
         left = self.y * self.y
         right = self.x * self.x * self.x + self.curve.a * self.x + self.curve.b
         return left.field == right.field and left.e == right.e
 
     def scalar_mul(self, n: int):
+        """Calculates the scalar product of the point with a given Integer
+        by adding the point to itself."""
         if not self.is_on_curve():
             raise ValueError('The given point is not on the curve.')
 
         tmp = self
         for i in range(n):
             tmp = tmp + self
-
         return tmp
 
     def double_and_add(self, n: int):
+        """Calculates the scalar product of the point with a given Integer
+        in a more efficient way by using the double-and-add-algorithm.
+        INSERT DESCRIPTION HERE"""
         if not self.is_on_curve():
             raise ValueError('The given point is not on the curve.')
 
@@ -83,8 +99,11 @@ class PointElement:
         return result
 
     def non_adjacent_form(self, n: int):
-        # if not self.is_on_curve():
-        #     raise ValueError('The given point is not on the curve.')
+        """Calculates the scalar product of the point with a given Integer
+        in a more efficient way by using the non-adjacent-form.
+        INSERT DESCRIPTION HERE"""
+        if not self.is_on_curve():
+            raise ValueError('The given point is not on the curve.')
 
         # TODO: implement
         e1 = FiniteFieldElement(0, self.curve.a)
@@ -98,6 +117,16 @@ class PointElement:
             tmp = tmp * 2
 
         return result
+
+    def generate_sub_group(self):
+        """Generates all unique points, that can be calculated by adding
+        the point to itself."""
+        return
+
+    def get_generator(self):
+        """Calculates the generator of an elliptic curve by finding the
+        point, that equals the amount of points on its curve."""
+        return
 
 
 if __name__ == '__main__':

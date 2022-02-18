@@ -5,7 +5,9 @@ from finite_field.finite_field import FiniteField
 class EllipticCurve:
 
     def __init__(self, a: FiniteFieldElement, b: FiniteFieldElement):
-
+        """Initializes an EllipticCurve by providing it with two parameters of type
+        FiniteFieldElement. Checks first, whether the determinant of the given
+        parameters are not equal to 0. If they are equal to 0, then raise ValueError."""
         e1 = FiniteFieldElement(-1, a.field)
         e2 = FiniteFieldElement(4, a.field)
         e3 = FiniteFieldElement(27, a.field)
@@ -21,10 +23,8 @@ class EllipticCurve:
         return "(Curve: y^2 = x^3 + {0}x + {1})".format(self.a.e, self.b.e)
 
     def __eq__(self, other):
+        """Checks, whether the curve is equal to another one."""
         return self.a == other.a and self.b == other.b
-
-    def get_points(self):
-        return
 
 
 if __name__ == '__main__':
