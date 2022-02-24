@@ -29,10 +29,10 @@ class PointElement:
 
         # handles addition with Point at Infinity
         if self.z.e == 0 and other.z.e == 0:
-            self.x.e = 0
-            self.y.e = 1
-            self.z.e = 0
-            return self
+            x3 = FiniteFieldElement(0, self.x.field)
+            y3 = FiniteFieldElement(1, self.y.field)
+            z3 = FiniteFieldElement(0, self.y.field)
+            return PointElement(x3, y3, z3, self.curve)
         elif self.z != other.z:
             if other.z.e == 0:
                 return self
@@ -54,10 +54,10 @@ class PointElement:
             y3 = slope * (self.x - x3) - self.y
             return PointElement(x3, y3, self.z, self.curve)
         else:
-            self.x.e = 0
-            self.y.e = 1
-            self.z.e = 0
-            return self
+            x3 = FiniteFieldElement(0, self.x.field)
+            y3 = FiniteFieldElement(1, self.y.field)
+            z3 = FiniteFieldElement(0, self.y.field)
+            return PointElement(x3, y3, z3, self.curve)
 
     def __sub__(self, other):
         """Calculates the subtraction of two points."""
@@ -78,9 +78,9 @@ class PointElement:
         then raise ValueError."""
         # TODO: eq-method in finite_field_element?
         left = self.y * self.y * self.z
-        right = self.x * self.x * self.x \
-                + self.curve.a * self.x * self.z * self.z \
-                + self.curve.b * self.z * self.z * self.z
+        right = (self.x * self.x * self.x
+                 + self.curve.a * self.x * self.z * self.z
+                 + self.curve.b * self.z * self.z * self.z)
         return left.field == right.field and left.e == right.e
 
     def scalar_mul(self, n: int):
@@ -163,6 +163,7 @@ if __name__ == '__main__':
     print("P1+P1: %s" % (p1 + p1))
     print("P1+P2: %s" % (p1 + p2))
     print("P1-P2: %s" % (p1 - p2))
+    print("P1-P1: %s" % (p1 - p1))
     print("%s*P1 (scalar): %s" % (9, p1.scalar_mul(9)))
     print("%s*P1 (daa): %s" % (9, p1.double_and_add(9)))
     print("%s*P1 (naf): %s" % (9, p1.non_adjacent_form(9)))
