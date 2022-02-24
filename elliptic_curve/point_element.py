@@ -23,8 +23,8 @@ class PointElement:
         """Adds two points to retrieve a new one.
         Performs different calculations depending on the coordinates.
         """
-        if not self.is_on_curve() or not other.is_on_curve():
-            raise ValueError('One or more points are not on the curve.')
+        # if not self.is_on_curve() or not other.is_on_curve():
+        #     raise ValueError('One or more points are not on the curve.')
 
         # TODO: use this or the formulas from http://hyperelliptic.org ?
         # TODO: check which formulas are the most efficient
@@ -70,11 +70,11 @@ class PointElement:
     def scalar_mul(self, n: int):
         """Calculates the scalar product of the point with a given Integer
         by adding the point to itself."""
-        if not self.is_on_curve():
-            raise ValueError('The given point is not on the curve.')
+        # if not self.is_on_curve():
+        #     raise ValueError('The given point is not on the curve.')
 
         tmp = self
-        for i in range(n):
+        for i in range(n-1):
             tmp = tmp + self
         return tmp
 
@@ -82,20 +82,18 @@ class PointElement:
         """Calculates the scalar product of the point with a given Integer
         in a more efficient way by using the double-and-add-algorithm.
         INSERT DESCRIPTION HERE"""
-        if not self.is_on_curve():
-            raise ValueError('The given point is not on the curve.')
+        # if not self.is_on_curve():
+        #     raise ValueError('The given point is not on the curve.')
 
-        # TODO: implement
-        e1 = FiniteFieldElement(0, self.curve.a)
-        e2 = FiniteFieldElement(0, self.curve.a)
-        result = PointElement(e1, e2, self.curve)
-        tmp = result
+        e1 = FiniteFieldElement(0, self.x.field)
+        e2 = FiniteFieldElement(0, self.y.field)
+        result = PointElement(e1, e2, self.curve)   # needs to be Point at Infinity
+        tmp = self
 
-        for bit in get_daa_bits(n):
-            if bit == 1:
+        for i in get_daa_bits(n):
+            if i == 1:
                 result = result + tmp
-            tmp = tmp * 2
-
+            tmp = tmp + tmp
         return result
 
     def non_adjacent_form(self, n: int):
@@ -106,15 +104,15 @@ class PointElement:
             raise ValueError('The given point is not on the curve.')
 
         # TODO: implement
-        e1 = FiniteFieldElement(0, self.curve.a)
-        e2 = FiniteFieldElement(0, self.curve.a)
+        e1 = FiniteFieldElement(0, self.x.field)
+        e2 = FiniteFieldElement(0, self.y.field)
         result = PointElement(e1, e2, self.curve)
-        tmp = result
+        tmp = self
 
-        for bit in get_naf_bits(n):
-            if bit == 1:
+        for i in get_naf_bits(n):
+            if i == 1:
                 result = result + tmp
-            tmp = tmp * 2
+            tmp = tmp + tmp
 
         return result
 
@@ -139,10 +137,13 @@ if __name__ == '__main__':
     p1 = PointElement(element1, element2, curve1)
     p2 = p1 + p1
 
-    print(p1.is_on_curve())
-    print(p2.is_on_curve())
-    print(-p1)
-    print(p1+p1)
-    print(p1+p2)
-    print(p1-p2)
-    print(p1.scalar_mul(3))
+    print("P1 on curve: %s" % p1.is_on_curve())
+    print("P2 on curve: %s" % p2.is_on_curve())
+    print(" P1: %s" % p1)
+    print("-P1: %s" % -p1)
+    print("P1+P1: %s" % (p1+p1))
+    print("P1+P2: %s" % (p1+p2))
+    print("P1-P2: %s" % (p1-p2))
+    print("%s*P1 (scalar): %s" % (9, p1.scalar_mul(9)))
+    # print("%s*P1 (daa): %s" % (9, p1.double_and_add(9)))
+    # print("%s*P1 (naf): %s" % (9, p1.non_adjacent_form(9)))
