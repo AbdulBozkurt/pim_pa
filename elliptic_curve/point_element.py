@@ -9,7 +9,6 @@ class PointElement:
         """Initializes an PointElement by providing it with two (later three) coordinates of type
         FiniteFieldElement and the corresponding curve. Checks first, whether the fields of the
         given elements are equal. If they are not equal, then raise ValueError."""
-        # TODO: add z as projective coordinate
         if x.field != y.field:
             raise ValueError('The bases of  the given elements are not equal.')
         self.x = x
@@ -29,10 +28,7 @@ class PointElement:
 
         # handles addition with Point at Infinity
         if self.z.e == 0 and other.z.e == 0:
-            x3 = FiniteFieldElement(0, self.x.field)
-            y3 = FiniteFieldElement(1, self.y.field)
-            z3 = FiniteFieldElement(0, self.y.field)
-            return PointElement(x3, y3, z3, self.curve)
+            return self.point_at_infinity()
         elif self.z != other.z:
             if other.z.e == 0:
                 return self
@@ -54,10 +50,7 @@ class PointElement:
             y3 = slope * (self.x - x3) - self.y
             return PointElement(x3, y3, self.z, self.curve)
         else:
-            x3 = FiniteFieldElement(0, self.x.field)
-            y3 = FiniteFieldElement(1, self.y.field)
-            z3 = FiniteFieldElement(0, self.y.field)
-            return PointElement(x3, y3, z3, self.curve)
+            return self.point_at_infinity()
 
     def __sub__(self, other):
         """Calculates the subtraction of two points."""
@@ -71,6 +64,12 @@ class PointElement:
     def __eq__(self, other):
         """Checks, whether the point is equal to another one."""
         return self.x == other.x and self.y == other.y and self.z == other.z and self.curve == other.curve
+
+    def point_at_infinity(self):
+        x3 = FiniteFieldElement(0, self.x.field)
+        y3 = FiniteFieldElement(1, self.y.field)
+        z3 = FiniteFieldElement(0, self.y.field)
+        return PointElement(x3, y3, z3, self.curve)
 
     def is_on_curve(self):
         """Checks, whether the point is on its elliptic curve, by inserting them
@@ -101,10 +100,7 @@ class PointElement:
         # if not self.is_on_curve():
         #     raise ValueError('The given point is not on the curve.')
 
-        e1 = FiniteFieldElement(0, self.x.field)
-        e2 = FiniteFieldElement(1, self.y.field)
-        e3 = FiniteFieldElement(0, self.y.field)
-        result = PointElement(e1, e2, e3, self.curve)
+        result = self.point_at_infinity()
         tmp = self
 
         for i in get_daa_bits(n):
@@ -121,10 +117,7 @@ class PointElement:
             raise ValueError('The given point is not on the curve.')
 
         # TODO: implement
-        e1 = FiniteFieldElement(0, self.x.field)
-        e2 = FiniteFieldElement(0, self.y.field)
-        e3 = FiniteFieldElement(0, self.y.field)
-        result = PointElement(e1, e2, e3, self.curve)
+        result = self.point_at_infinity()
         tmp = self
 
         for i in get_naf_bits(n):
