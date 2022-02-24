@@ -123,7 +123,8 @@ class PointElement:
         # TODO: implement
         e1 = FiniteFieldElement(0, self.x.field)
         e2 = FiniteFieldElement(0, self.y.field)
-        result = PointElement(e1, e2, self.curve)
+        e3 = FiniteFieldElement(0, self.y.field)
+        result = PointElement(e1, e2, e3, self.curve)
         tmp = self
 
         for i in get_naf_bits(n):
@@ -164,4 +165,4 @@ if __name__ == '__main__':
     print("P1-P2: %s" % (p1 - p2))
     print("%s*P1 (scalar): %s" % (9, p1.scalar_mul(9)))
     print("%s*P1 (daa): %s" % (9, p1.double_and_add(9)))
-    # print("%s*P1 (naf): %s" % (9, p1.non_adjacent_form(9)))
+    print("%s*P1 (naf): %s" % (9, p1.non_adjacent_form(9)))
