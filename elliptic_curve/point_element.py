@@ -68,7 +68,7 @@ class PointElement:
     def point_at_infinity(self):
         x3 = FiniteFieldElement(0, self.x.field)
         y3 = FiniteFieldElement(1, self.y.field)
-        z3 = FiniteFieldElement(0, self.y.field)
+        z3 = FiniteFieldElement(0, self.z.field)
         return PointElement(x3, y3, z3, self.curve)
 
     def is_on_curve(self):
@@ -130,7 +130,12 @@ class PointElement:
     def generate_sub_group(self):
         """Generates all unique points, that can be calculated by adding
         the point to itself."""
-        return
+        tmp = self
+        sub_group = [tmp]
+        while tmp != self.point_at_infinity():
+            tmp = self + tmp
+            sub_group.append(tmp)
+        return sub_group
 
     def get_generator(self):
         """Calculates the generator of an elliptic curve by finding the
@@ -160,3 +165,4 @@ if __name__ == '__main__':
     print("%s*P1 (scalar): %s" % (9, p1.scalar_mul(9)))
     print("%s*P1 (daa): %s" % (9, p1.double_and_add(9)))
     print("%s*P1 (naf): %s" % (9, p1.non_adjacent_form(9)))
+    print("Order of Subgroup of P1: %s" % len(p1.generate_sub_group()))
