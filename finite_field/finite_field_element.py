@@ -1,5 +1,6 @@
 import mod_arith.modarith as mod
 from finite_field.finite_field import FiniteField
+__all__ = ["FiniteFieldElement"]
 
 
 class FiniteFieldElement:
@@ -45,6 +46,14 @@ class FiniteFieldElement:
 
     def inv(self):
         return FiniteFieldElement(1, self.field)/self
+
+    def __eq__(self, other):
+        if isinstance(other, int):
+            return self.e == other
+        if self.field != other.field:
+            raise ValueError(f"Cannot compare two elements from different finite fields. Given bases were {self.field} "
+                             f"and {other.field}.")
+        return self.e == other.e
 
 
 if __name__ == '__main__':

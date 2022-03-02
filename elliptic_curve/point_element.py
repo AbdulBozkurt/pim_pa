@@ -1,7 +1,7 @@
 from finite_field.finite_field_element import FiniteFieldElement
 from finite_field.finite_field import FiniteField
-from elliptic_curve import EllipticCurve
-from algorithm import get_daa_bits, get_naf_bits
+from elliptic_curve.elliptic_curve import EllipticCurve
+from elliptic_curve.algorithm import get_daa_bits, get_naf_bits
 
 
 class PointElement:
@@ -169,6 +169,14 @@ class PointElement:
         """Calculates the generator of an elliptic curve by finding the
         point, that equals the amount of points on its curve."""
         return
+
+    def serialize(self):
+        return f"{self.x.e} {self.y.e} {self.z.e}"
+
+    @staticmethod
+    def deserialize(string_representation: str, curve: EllipticCurve) -> "PointElement":
+        x, y, z = tuple(FiniteFieldElement(int(i), curve.field) for i in string_representation.split(" "))
+        return PointElement(x, y, z, curve)
 
 
 if __name__ == '__main__':

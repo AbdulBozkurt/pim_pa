@@ -1,5 +1,6 @@
 from finite_field.finite_field_element import FiniteFieldElement
 from finite_field.finite_field import FiniteField
+__all__ = ["EllipticCurve"]
 
 
 class EllipticCurve:

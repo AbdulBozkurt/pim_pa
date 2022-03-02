@@ -1,4 +1,5 @@
 import finite_field.prime_numbers as prime_numbers
+__all__ = ["FiniteField"]
 
 
 class FiniteField:
