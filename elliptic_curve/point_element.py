@@ -65,6 +65,27 @@ class PointElement:
         """Checks, whether the point is equal to another one."""
         return self.x == other.x and self.y == other.y and self.z == other.z and self.curve == other.curve
 
+    def __mul__(self, other):
+        """Calculates the scalar product of the point with a given Integer
+        in a more efficient way by using the double-and-add-algorithm.
+        INSERT DESCRIPTION HERE"""
+        # if not self.is_on_curve():
+        #     raise ValueError('The given point is not on the curve.')
+        if other < 1:
+            raise ValueError('n must be a positive integer.')
+
+        result = self.point_at_infinity()
+        tmp = self
+
+        for i in get_daa_bits(other):
+            if i == 1:
+                result = result + tmp
+            tmp = tmp + tmp
+        return result
+
+    def __rmul__(self, other):
+        return self * other
+
     def point_at_infinity(self):
         x3 = FiniteFieldElement(0, self.x.field)
         y3 = FiniteFieldElement(1, self.y.field)
@@ -87,6 +108,8 @@ class PointElement:
         by adding the point to itself."""
         # if not self.is_on_curve():
         #     raise ValueError('The given point is not on the curve.')
+        if n < 1:
+            raise ValueError('n must be a positive integer.')
 
         tmp = self
         for i in range(n - 1):
@@ -99,6 +122,8 @@ class PointElement:
         INSERT DESCRIPTION HERE"""
         # if not self.is_on_curve():
         #     raise ValueError('The given point is not on the curve.')
+        if n < 1:
+            raise ValueError('n must be a positive integer.')
 
         result = self.point_at_infinity()
         tmp = self
@@ -115,6 +140,8 @@ class PointElement:
         INSERT DESCRIPTION HERE"""
         if not self.is_on_curve():
             raise ValueError('The given point is not on the curve.')
+        if n < 1:
+            raise ValueError('n must be a positive integer.')
 
         # TODO: implement
         result = self.point_at_infinity()
@@ -130,6 +157,7 @@ class PointElement:
     def generate_sub_group(self):
         """Generates all unique points, that can be calculated by adding
         the point to itself."""
+        # TODO prüfen ob prim
         tmp = self
         sub_group = [tmp]
         while tmp != self.point_at_infinity():
@@ -162,7 +190,9 @@ if __name__ == '__main__':
     print("P1+P2: %s" % (p1 + p2))
     print("P1-P2: %s" % (p1 - p2))
     print("P1-P1: %s" % (p1 - p1))
+    print("%s*P1: %s" % (9, 9 * p1))
     print("%s*P1 (scalar): %s" % (9, p1.scalar_mul(9)))
     print("%s*P1 (daa): %s" % (9, p1.double_and_add(9)))
     print("%s*P1 (naf): %s" % (9, p1.non_adjacent_form(9)))
-    print("Order of Subgroup of P1: %s" % len(p1.generate_sub_group()))
+    # TODO: __eq__ in finite_field_element
+    # print("Order of Subgroup of P1: %s" % len(p1.generate_sub_group()))
