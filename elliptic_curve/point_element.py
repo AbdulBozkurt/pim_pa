@@ -96,12 +96,11 @@ class PointElement:
         """Checks, whether the point is on its elliptic curve, by inserting them
         into the curve. If both sides of the equation are not equal,
         then raise ValueError."""
-        # TODO: eq-method in finite_field_element?
         left = self.y * self.y * self.z
         right = (self.x * self.x * self.x
                  + self.curve.a * self.x * self.z * self.z
                  + self.curve.b * self.z * self.z * self.z)
-        return left.field == right.field and left.e == right.e
+        return left == right
 
     def scalar_mul(self, n: int):
         """Calculates the scalar product of the point with a given Integer
@@ -157,13 +156,15 @@ class PointElement:
     def generate_sub_group(self):
         """Generates all unique points, that can be calculated by adding
         the point to itself."""
-        # TODO prüfen ob prim
+        # TODO: check if prime
         tmp = self
         sub_group = [tmp]
+        counter = 1
         while tmp != self.point_at_infinity():
             tmp = self + tmp
             sub_group.append(tmp)
-        return sub_group
+            counter += counter
+        return sub_group, counter
 
     def get_generator(self):
         """Calculates the generator of an elliptic curve by finding the
@@ -202,5 +203,4 @@ if __name__ == '__main__':
     print("%s*P1 (scalar): %s" % (9, p1.scalar_mul(9)))
     print("%s*P1 (daa): %s" % (9, p1.double_and_add(9)))
     print("%s*P1 (naf): %s" % (9, p1.non_adjacent_form(9)))
-    # TODO: __eq__ in finite_field_element
-    # print("Order of Subgroup of P1: %s" % len(p1.generate_sub_group()))
+    print("Order of Subgroup of P1: %s" % p1.generate_sub_group()[1])
