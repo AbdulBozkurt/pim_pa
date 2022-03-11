@@ -2,6 +2,7 @@ from finite_field.finite_field_element import FiniteFieldElement
 from finite_field.finite_field import FiniteField
 from elliptic_curve.elliptic_curve import EllipticCurve
 from elliptic_curve.algorithm import get_daa_bits, get_naf_bits
+__all__ = ["PointElement"]
 
 
 class PointElement:
