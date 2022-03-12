@@ -18,7 +18,7 @@ class FuzzingTester:
     def run(self):
 
         functions = (self.test_add, self.test_sub, self.test_mul, self.test_inv, self.test_div, self.test_euclidean,
-                     self.test_extended_euclidean)
+                     self.test_extended_euclidean, self.test_mod)
 
         def get_random_value():
             return random.randint(self.min_rand, self.max_rand)
@@ -149,6 +149,28 @@ class FuzzingTester:
         if d != s * x + t * y:
             return modarith.extended_euclidean_alg, (x, y), result, None, "result must satisfy the equation d == s * " \
                                                                           "x + t * y "
+
+    # noinspection PyUnusedLocal
+    @staticmethod
+    def test_mod(x: int, y: int, k: int):
+        try:
+            result = modarith.mod(x, k)
+        except ZeroDivisionError as err:
+            if k == 0:
+                return
+            else:
+                return modarith.mod, (x, k), None, err, "ZeroDivisionError despite k != 0"
+        except ValueError as err:
+            if k < 0:
+                return
+            else:
+                return modarith.mod, (x, k), None, err, ""
+        if k == 0:
+            return modarith.mod, (x, k), result, None, "expected ZeroDivisionError, because k == 0"
+        if k < 0:
+            return modarith.mod, (x, k), result, None, "expected ValueError, because k < 0"
+        if result != x % k:
+            return modarith.mod, (x, k), result, None, ""
 
 
 if __name__ == "__main__":
