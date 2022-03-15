@@ -30,4 +30,4 @@ element1 = FiniteFieldElement(4, FiniteField(13))
 element2 = FiniteFieldElement(7, FiniteField(13))
 element3 = FiniteFieldElement(1, FiniteField(13))
 p1 = PointElement(element1, element2, element3, curve1)
-sub_group_size = p1.generate_sub_group()[1]
+sub_group_size = len(p1.generate_sub_group())
