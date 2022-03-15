@@ -1,5 +1,5 @@
 from finite_field.finite_field_element import FiniteFieldElement
-from finite_field.finite_field import FiniteField, get_safe_field
+from finite_field.finite_field import get_safe_field
 from elliptic_curve import EllipticCurve
 from algorithm import get_daa_bits, get_naf_bits
 __all__ = ["PointElement"]
@@ -57,7 +57,7 @@ class PointElement:
 
     def __neg__(self) -> "PointElement":
         """Calculates the negation of a point by multiplying its y-coordinate with -1."""
-        i = FiniteFieldElement(-1, self.y.field)
+        i = FiniteFieldElement([-1], self.y.field)
         return PointElement(self.x, self.y * i, self.z, self.curve)
 
     def __eq__(self, other: "PointElement") -> bool:
@@ -86,9 +86,9 @@ class PointElement:
         return self * other
 
     def point_at_infinity(self) -> "PointElement":
-        x3 = FiniteFieldElement(0, self.x.field)
-        y3 = FiniteFieldElement(1, self.y.field)
-        z3 = FiniteFieldElement(0, self.z.field)
+        x3 = FiniteFieldElement([0], self.x.field)
+        y3 = FiniteFieldElement([1], self.y.field)
+        z3 = FiniteFieldElement([0], self.z.field)
         return PointElement(x3, y3, z3, self.curve)
 
     def is_on_curve(self) -> bool:
@@ -179,22 +179,22 @@ class PointElement:
 
 if __name__ == '__main__':
     field = get_safe_field()
-    a = 340282366762482138434845932244680310780
-    b = 308990863222245658030922601041482374867
-    curve_param_a = FiniteFieldElement(a, field)
-    curve_param_b = FiniteFieldElement(b, field)
+    a = 340282366762482138434845932244680310780  # curve-parameter a
+    b = 308990863222245658030922601041482374867  # curve-parameter b
+    curve_param_a = FiniteFieldElement([a], field)
+    curve_param_b = FiniteFieldElement([b], field)
     curve1 = EllipticCurve(curve_param_a, curve_param_b)
 
     e1 = 29408993404948928992877151431649155974  # x-coordinate
     e2 = 275621562871047521857442314737465260675  # y-coordinate
     e3 = 1  # z-coordinate
-    element1 = FiniteFieldElement(e1, field)
-    element2 = FiniteFieldElement(e2, field)
-    element3 = FiniteFieldElement(e3, field)
+    element1 = FiniteFieldElement([e1], field)
+    element2 = FiniteFieldElement([e2], field)
+    element3 = FiniteFieldElement([e3], field)
     p1 = PointElement(element1, element2, element3, curve1)
     p2 = p1 + p1
-    n = 340282366762482138443322565580356624661
-    
+    scalar = 340282366762482138443322565580356624661
+
     print("P1 on curve: %s" % p1.is_on_curve())
     print("P2 on curve: %s" % p2.is_on_curve())
     print(" P1: %s" % p1)
@@ -203,8 +203,8 @@ if __name__ == '__main__':
     print("P1+P2: %s" % (p1 + p2))
     print("P1-P2: %s" % (p1 - p2))
     print("P1-P1: %s" % (p1 - p1))
-    print("%s*P1: %s" % (n, n * p1))
-    print("%s*P1 (scalar): %s" % (n, p1.scalar_mul(n)))
-    print("%s*P1 (daa): %s" % (n, p1.double_and_add(n)))
-    print("%s*P1 (naf): %s" % (n, p1.non_adjacent_form(n)))
+    print("%s*P1: %s" % (scalar, scalar * p1))
+    print("%s*P1 (scalar): %s" % (scalar, p1.scalar_mul(scalar)))
+    print("%s*P1 (daa): %s" % (scalar, p1.double_and_add(scalar)))
+    print("%s*P1 (naf): %s" % (scalar, p1.non_adjacent_form(scalar)))
     print("Order of Subgroup of P1: %s" % len(p1.generate_sub_group()))
