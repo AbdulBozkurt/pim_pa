@@ -193,7 +193,8 @@ if __name__ == '__main__':
     element3 = FiniteFieldElement(e3, field)
     p1 = PointElement(element1, element2, element3, curve1)
     p2 = p1 + p1
-
+    n = 340282366762482138443322565580356624661
+    
     print("P1 on curve: %s" % p1.is_on_curve())
     print("P2 on curve: %s" % p2.is_on_curve())
     print(" P1: %s" % p1)
@@ -202,8 +203,8 @@ if __name__ == '__main__':
     print("P1+P2: %s" % (p1 + p2))
     print("P1-P2: %s" % (p1 - p2))
     print("P1-P1: %s" % (p1 - p1))
-    print("%s*P1: %s" % (9, 9 * p1))
-    print("%s*P1 (scalar): %s" % (9, p1.scalar_mul(9)))
-    print("%s*P1 (daa): %s" % (9, p1.double_and_add(9)))
-    print("%s*P1 (naf): %s" % (9, p1.non_adjacent_form(9)))
-    print("Order of Subgroup of P1: %s" % p1.generate_sub_group()[1])
+    print("%s*P1: %s" % (n, n * p1))
+    print("%s*P1 (scalar): %s" % (n, p1.scalar_mul(n)))
+    print("%s*P1 (daa): %s" % (n, p1.double_and_add(n)))
+    print("%s*P1 (naf): %s" % (n, p1.non_adjacent_form(n)))
+    print("Order of Subgroup of P1: %s" % len(p1.generate_sub_group()))
