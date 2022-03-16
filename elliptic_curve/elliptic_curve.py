@@ -32,6 +32,5 @@ if __name__ == '__main__':
     field = get_safe_field()
     param_a = FiniteFieldElement([2], get_safe_field())
     param_b = FiniteFieldElement([3], get_safe_field())
-    print(param_b * param_b)
     weierstrass = EllipticCurve(param_a, param_b)
     print(weierstrass)

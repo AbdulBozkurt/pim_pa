@@ -42,8 +42,8 @@ class PointElement:
             y3 = slope * (self.x - x3) - self.y
             return PointElement(x3, y3, self.z, self.curve)
         elif self == other and self.y != 0:
-            tmp1 = FiniteFieldElement(3, self.x.field)
-            tmp2 = FiniteFieldElement(2, self.x.field)
+            tmp1 = FiniteFieldElement([3], self.x.field)
+            tmp2 = FiniteFieldElement([2], self.x.field)
             slope = (tmp1 * self.x * self.x + self.curve.a) / (tmp2 * self.y)
             x3 = slope * slope - self.x - self.x
             y3 = slope * (self.x - x3) - self.y
