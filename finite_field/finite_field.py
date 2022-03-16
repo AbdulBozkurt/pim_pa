@@ -5,8 +5,12 @@ __all__ = ["FiniteField", "get_safe_field"]
 
 def clean_list(a: list) -> list:
     """Cleans a list defining a polynomial of all leading zeros"""
+    if len(a) == 0:
+        return a
     while a[0] == 0:
         a.pop(0)
+        if len(a) == 0:
+            return a
     return a
 
 
@@ -91,5 +95,7 @@ class FiniteField:
             a = add(a, temp, self.p)
             a = clean_list(a)
 
+        for i in range(len(a)):
+            a[i] = mod.mod(a[i], self.p)
         return a
 

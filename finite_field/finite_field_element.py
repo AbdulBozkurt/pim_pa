@@ -1,3 +1,4 @@
+import finite_field.finite_field
 import mod_arith.modarith as mod
 from finite_field.finite_field import FiniteField
 __all__ = ["FiniteFieldElement"]
@@ -73,14 +74,6 @@ class FiniteFieldElement:
                 result[i + j] += a_element * b_element
         return FiniteFieldElement(result, self.field)
 
-    def __truediv__(self, other):
-        # TODO probably dont need it anymore
-        if self.field != other.field:
-            raise ArithmeticError('Cannot divide two elements from different finite fields. '
-                                  'Given bases were {0} and {1}'.format(self.field, other.field))
-        e = mod.mod_div(self.e, other.e, self.field.p)
-        return FiniteFieldElement(e, self.field)
-
     def __eq__(self, other):
         if isinstance(other, int):
             return self.e == other
@@ -91,10 +84,8 @@ class FiniteFieldElement:
 
 
 if __name__ == '__main__':
-    e1 = FiniteFieldElement(10, FiniteField(11))
-    e2 = FiniteFieldElement(3, FiniteField(11))
-    print(e2.inv())
+    e1 = FiniteFieldElement([10], finite_field.get_safe_field())
+    e2 = FiniteFieldElement([3], finite_field.get_safe_field())
     print(e1+e2)
     print(e1-e2)
     print(e1*e2)
-    print(e1/e2)
