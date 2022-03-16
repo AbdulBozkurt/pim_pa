@@ -1,7 +1,7 @@
 from finite_field.finite_field_element import FiniteFieldElement
 from finite_field.finite_field import get_safe_field
 from elliptic_curve import EllipticCurve
-from algorithm import get_daa_bits, get_naf_bits
+from algorithm import get_daa_bits
 __all__ = ["PointElement"]
 
 
@@ -24,8 +24,8 @@ class PointElement:
         """Adds two points to retrieve a new one.
         Performs different calculations depending on the coordinates.
         """
-        if not self.is_on_curve() or not other.is_on_curve():
-            raise ValueError('One or more points are not on the curve.')
+        # if not self.is_on_curve() or not other.is_on_curve():
+        #     raise ValueError('One or more points are not on the curve.')
 
         # handles addition with Point at Infinity
         if self.z.e == 0 and other.z.e == 0:
@@ -37,17 +37,44 @@ class PointElement:
                 return other
 
         if self.x != other.x:
-            slope = (other.y - self.y) / (other.x - self.x)
-            x3 = slope * slope - self.x - other.x
-            y3 = slope * (self.x - x3) - self.y
-            return PointElement(x3, y3, self.z, self.curve)
-        elif self == other and self.y != 0:
-            tmp1 = FiniteFieldElement([3], self.x.field)
             tmp2 = FiniteFieldElement([2], self.x.field)
-            slope = (tmp1 * self.x * self.x + self.curve.a) / (tmp2 * self.y)
-            x3 = slope * slope - self.x - self.x
-            y3 = slope * (self.x - x3) - self.y
-            return PointElement(x3, y3, self.z, self.curve)
+            # 14M for addition: 12M + 2S
+            y1z2 = self.y * other.z
+            x1z2 = self.x * other.z
+            z1z2 = self.z * other.z
+            u = other.y * self.z - y1z2
+            uu = u * u
+            v = other.x * self.z - x1z2
+            vv = v * v
+            vvv = v * vv
+            R = vv * x1z2
+            A = uu * z1z2 - vvv - tmp2 * R
+            x3 = v * A
+            y3 = u * (R-A) - vvv * y1z2
+            z3 = vvv * z1z2
+
+            return PointElement(x3, y3, z3, self.curve)
+
+        elif self == other and self.y != 0:
+            tmp3 = FiniteFieldElement([3], self.x.field)
+            tmp2 = FiniteFieldElement([2], self.x.field)
+            # 11M for doubling: 5M + 6S
+            xx = self.x * self.x
+            zz = self.z * self.z
+            w = self.curve.a * zz + tmp3 * xx
+            s = tmp2 * self.y * self.z
+            ss = s * s
+            sss = s * ss
+            R = self.y * s
+            RR = R * R
+            B = (self.x + R) * (self.x + R) - xx - RR
+            h = w * w - tmp2 * B
+            x3 = h * s
+            y3 = w * (B-h) - tmp2 * RR
+            z3 = sss
+
+            return PointElement(x3, y3, z3, self.curve)
+
         else:
             return self.point_at_infinity()
 
@@ -95,7 +122,7 @@ class PointElement:
         """Checks, whether the point is on its elliptic curve, by inserting them
         into the curve. If both sides of the equation are not equal,
         then raise ValueError."""
-        left = self.y * self.y * self.z
+        left = (self.y * self.y * self.z)
         right = (self.x * self.x * self.x
                  + self.curve.a * self.x * self.z * self.z
                  + self.curve.b * self.z * self.z * self.z)
@@ -130,26 +157,6 @@ class PointElement:
             if i == 1:
                 result = result + tmp
             tmp = tmp + tmp
-        return result
-
-    def non_adjacent_form(self, n: int) -> "PointElement":
-        """Calculates the scalar product of the point with a given Integer
-        in a more efficient way by using the non-adjacent-form.
-        INSERT DESCRIPTION HERE"""
-        if not self.is_on_curve():
-            raise ValueError('The given point is not on the curve.')
-        if n < 1:
-            raise ValueError('n must be a positive integer.')
-
-        # TODO: implement
-        result = self.point_at_infinity()
-        tmp = self
-
-        for i in get_naf_bits(n):
-            if i == 1:
-                result = result + tmp
-            tmp = tmp + tmp
-
         return result
 
     def generate_sub_group(self) -> list:
@@ -206,5 +213,4 @@ if __name__ == '__main__':
     print("%s*P1: %s" % (scalar, scalar * p1))
     print("%s*P1 (scalar): %s" % (scalar, p1.scalar_mul(scalar)))
     print("%s*P1 (daa): %s" % (scalar, p1.double_and_add(scalar)))
-    print("%s*P1 (naf): %s" % (scalar, p1.non_adjacent_form(scalar)))
     print("Order of Subgroup of P1: %s" % len(p1.generate_sub_group()))
