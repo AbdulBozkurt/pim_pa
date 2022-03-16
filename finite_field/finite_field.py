@@ -73,7 +73,7 @@ class FiniteField:
     def __eq__(self, other):
         if not isinstance(other, FiniteField):
             return False
-        for i, j in self.poly, other.poly:
+        for i, j in zip(self.poly, other.poly):
             if i != j:
                 return False
         return self.p == other.p
