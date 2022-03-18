@@ -96,8 +96,8 @@ class PointElement:
         """Calculates the scalar product of the point with a given Integer
         in a more efficient way by using the double-and-add-algorithm.
         INSERT DESCRIPTION HERE"""
-        # if not self.is_on_curve():
-        #     raise ValueError('The given point is not on the curve.')
+        if not self.is_on_curve():
+            raise ValueError('The given point is not on the curve.')
         if other < 1:
             raise ValueError('n must be a positive integer.')
 
@@ -146,8 +146,8 @@ class PointElement:
         """Calculates the scalar product of the point with a given Integer
         in a more efficient way by using the double-and-add-algorithm.
         INSERT DESCRIPTION HERE"""
-        # if not self.is_on_curve():
-        #     raise ValueError('The given point is not on the curve.')
+        if not self.is_on_curve():
+            raise ValueError('The given point is not on the curve.')
         if n < 1:
             raise ValueError('n must be a positive integer.')
 
@@ -200,19 +200,28 @@ if __name__ == '__main__':
     element2 = FiniteFieldElement([e2], field)
     element3 = FiniteFieldElement([e3], field)
     p1 = PointElement(element1, element2, element3, curve1)
-
     p2 = p1 + p1
+    p3 = p1 - p2
+    p4 = p2 + p2
+    p5 = p1 - p1
     scalar = 340282366762482138443322565580356624661
+    p6 = scalar * p1
+
+    print(" P1: %s" % p1)
+    print("-P1: %s" % -p1)
+    print(" P2: %s" % p2)
+    print("P1-P2: %s" % p3)
+    print("P2+P2: %s" % p4)
+    print("P1-P1: %s" % p5)
+    print("%s*P1: %s\n" % (scalar, p6))
 
     print("P1 on curve: %s" % p1.is_on_curve())
     print("P2 on curve: %s" % p2.is_on_curve())
-    print(" P1: %s" % p1)
-    print("-P1: %s" % -p1)
-    print("P1+P1: %s" % (p1 + p1))
-    print("P1+P2: %s" % (p1 + p2))
-    print("P1-P2: %s" % (p1 - p2))
-    print("P1-P1: %s" % (p1 - p1))
-    print("%s*P1: %s" % (scalar, scalar * p1))
-    print("%s*P1 (scalar): %s" % (scalar, p1.scalar_mul(scalar)))
-    print("%s*P1 (daa): %s" % (scalar, p1.double_and_add(scalar)))
-    print("Order of Subgroup of P1: %s" % len(p1.generate_sub_group()))
+    print("P1-P2 on curve: %s" % p3.is_on_curve())
+    print("P2+P2 on curve: %s" % p4.is_on_curve())
+    print("P1-P1 on curve: %s" % p5.is_on_curve())
+    # Point: ([111614102573067424927652398299318724279]:[171041964748245813741138639535351797219])
+    print("%s*P1 on curve: %s" % (scalar, p6.is_on_curve()))
+    # print("%s*P1 (scalar): %s" % (scalar, p1.scalar_mul(scalar)))
+    # print("%s*P1 (daa): %s" % (scalar, p1.double_and_add(scalar)))
+    # print("Order of Subgroup of P1: %s" % len(p1.generate_sub_group()))
