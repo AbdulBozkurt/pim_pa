@@ -2,6 +2,7 @@ from finite_field.finite_field_element import FiniteFieldElement
 from finite_field.finite_field import get_safe_field
 from elliptic_curve import EllipticCurve
 from algorithm import get_daa_bits
+from mod_arith.modarith import extended_euclidean_alg
 __all__ = ["PointElement"]
 
 
@@ -212,8 +213,6 @@ if __name__ == '__main__':
     print("P1-P2: %s" % (p1 - p2))
     print("P1-P1: %s" % (p1 - p1))
     print("%s*P1: %s" % (scalar, scalar * p1))
-    c = 8 * p1
-    print("P3 on curve: %s" % c.is_on_curve())
-    # print("%s*P1 (scalar): %s" % (scalar, p1.scalar_mul(scalar)))
-    # print("%s*P1 (daa): %s" % (scalar, p1.double_and_add(scalar)))
-    # print("Order of Subgroup of P1: %s" % len(p1.generate_sub_group()))
+    print("%s*P1 (scalar): %s" % (scalar, p1.scalar_mul(scalar)))
+    print("%s*P1 (daa): %s" % (scalar, p1.double_and_add(scalar)))
+    print("Order of Subgroup of P1: %s" % len(p1.generate_sub_group()))
