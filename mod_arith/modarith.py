@@ -9,17 +9,23 @@ def normalize_params(x: int, y: int, k: int) -> Tuple[int, int, int]:
     mod k; and k will be checked whether it is greater than 1."""
     if k <= 1:
         raise ValueError(f"Parameter k should not be <= 1. Given: {k}")
-    return mod(x, k), mod(y, k), k
+    return (x % k), y % k, k
 
 
 def mod_add(x: int, y: int, k: int) -> int:
     """Calculates (x + y) mod k."""
     x, y, k = normalize_params(x, y, k)
-    return mod(x + y, k)
+    return (x + y) % k
 
 
 def mod(x: int, k: int) -> int:
     """Calculates x mod k"""
+    return x % k
+
+
+def _mod(x: int, k: int) -> int:
+    """Calculates x mod k (without %)
+    Warning: inefficient"""
     if k == 0:
         raise ZeroDivisionError(f"Tried dividing {x} mod {k}")
     if k < 0:
@@ -30,13 +36,13 @@ def mod(x: int, k: int) -> int:
 def mod_sub(x: int, y: int, k: int) -> int:
     """Calculates (x - y) mod k."""
     x, y, k = normalize_params(x, y, k)
-    return mod(x - y, k)
+    return (x - y) % k
 
 
 def mod_mul(x: int, y: int, k: int) -> int:
     """Calculates (x * y) mod k."""
     x, y, k = normalize_params(x, y, k)
-    return mod(x * y, k)
+    return (x * y) % k
 
 
 def mod_inv(x: int, k: int) -> int:
@@ -44,7 +50,7 @@ def mod_inv(x: int, k: int) -> int:
     If it isn't possible, raise ValueError."""
     x, _, k = normalize_params(x, 1, k)
     d, s, t = extended_euclidean_alg(x, k)
-    s = mod(s, k)
+    s %= k
     if d != 1:
         raise ValueError(f"Parameters x = {x} and k = {k} must be mutually prime. GCD was {d}")
     return s
@@ -54,12 +60,11 @@ def mod_div(x: int, y: int, k: int) -> int:
     """Calculates (x / y) mod k, if possible.
     If it isn't possible, raise ValueError."""
     x, y, k = normalize_params(x, y, k)
-    return mod(x * mod_inv(y, k), k)
+    return (x * mod_inv(y, k)) % k
 
 
 def extended_euclidean_alg(x: int, y: int) -> Tuple[int, int, int]:
     """Calculates d, t and s via the extended euclidean algorithm, so that d = s * x + t * y."""
-    # TODO implement in way I can better explain in the paper
     if x < 0:
         raise ValueError(f"Parameter x should not be < 0. Given: {x}")
     if y < 0:
@@ -69,7 +74,7 @@ def extended_euclidean_alg(x: int, y: int) -> Tuple[int, int, int]:
         return d, t, s
     if y == 0:
         return x, 1, 0
-    d, s, t = extended_euclidean_alg(y, mod(x, y))
+    d, s, t = extended_euclidean_alg(y, (x % y))
     return d, t, s - (x // y) * t
 
 
@@ -82,7 +87,7 @@ def euclidean_alg(x: int, y: int) -> int:
     if x < y:
         x, y = y, x
     while y != 0:
-        x, y = y, mod(x, y)
+        x, y = y, (x % y)
     return x
 
 
