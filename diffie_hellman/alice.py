@@ -1,6 +1,7 @@
 import socket
 from public_constants import *
 import random
+import hashlib
 
 
 class DiffieHellmanServerSocket:
@@ -71,7 +72,9 @@ def main():
             conn.send(q.serialize())
             conn.close()
             result = d * q_bob
-            print(f"Resulting point: {result}\n")
+            print(f"Resulting point: {result}")
+            hash_ = hashlib.sha512(str(result).encode()).hexdigest()
+            print(f"Resulting hash: {hash_}\n")
     finally:
         sock.close()
 
