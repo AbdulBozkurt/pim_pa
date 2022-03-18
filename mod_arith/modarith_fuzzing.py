@@ -1,3 +1,4 @@
+import math
 import random
 from typing import Callable, Tuple
 
@@ -17,8 +18,16 @@ class FuzzingTester:
 
     def run(self):
 
-        functions = (self.test_add, self.test_sub, self.test_mul, self.test_inv, self.test_div, self.test_euclidean,
-                     self.test_extended_euclidean, self.test_mod)
+        functions = (
+            self.test_extended_euclidean,
+            self.test_add,
+            self.test_sub,
+            self.test_mul,
+            self.test_inv,
+            self.test_div,
+            self.test_euclidean,
+            self.test_mod
+        )
 
         def get_random_value():
             return random.randint(self.min_rand, self.max_rand)
@@ -56,7 +65,7 @@ class FuzzingTester:
         if k <= 1:
             return modarith.mod_add, (x, y, k), result, None, "expected ValueError, because k <= 1"
         if result != (x + y) % k:
-            return modarith.mod_add, (x, y, k), result, None, ""
+            return modarith.mod_add, (x, y, k), result, None, "wrong result"
 
     @staticmethod
     def test_sub(x: int, y: int, k: int):
@@ -70,7 +79,7 @@ class FuzzingTester:
         if k <= 1:
             return modarith.mod_sub, (x, y, k), result, None, "expected ValueError, because k <= 1"
         if result != (x - y) % k:
-            return modarith.mod_sub, (x, y, k), result, None, ""
+            return modarith.mod_sub, (x, y, k), result, None, "wrong result"
 
     @staticmethod
     def test_mul(x: int, y: int, k: int):
@@ -84,7 +93,7 @@ class FuzzingTester:
         if k <= 1:
             return modarith.mod_mul, (x, y, k), result, None, "expected ValueError, because k <= 1"
         if result != (x * y) % k:
-            return modarith.mod_mul, (x, y, k), result, None, ""
+            return modarith.mod_mul, (x, y, k), result, None, "wrong result"
 
     # noinspection PyUnusedLocal
     @staticmethod
@@ -128,9 +137,9 @@ class FuzzingTester:
             return modarith.euclidean_alg, (x, y), None, err, "ValueError despite both x and y >= 0"
         if x < 0 or y < 0:
             return modarith.euclidean_alg, (x, y), result, None, "expected ValueError, because x or y < 0"
-        for i in range(result + 1, int(min(x, y) ** .5) + 1):
-            if x % i == 0 and y % i == 0:
-                return modarith.euclidean_alg, (x, y), result, None, f"was not gcd. {i} is greater common divisor"
+        real_result = math.gcd(x, y)
+        if real_result != result:
+            return modarith.euclidean_alg, (x, y), result, None, f"was not gcd. {real_result} is greater common divisor"
 
     # noinspection PyUnusedLocal
     @staticmethod
@@ -178,7 +187,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("min_rand", type=int, help="the smallest possible random value")
     parser.add_argument("max_rand", type=int, help="the biggest possible random value")
-    parser.add_argument("n", type=int, help="the amount of test runs")
+    parser.add_argument("n", type=int, help="the amount of test runs [>= 100]")
     args = parser.parse_args()
-    tester = FuzzingTester(int(args.min_rand), int(args.max_rand), int(args.n))
+    n: int = int(args.n)
+    if n < 100:
+        raise ValueError(f"n musst be at least 100, given {n}")
+    min_rand: int = int(args.min_rand)
+    max_rand: int = int(args.max_rand)
+    if min_rand >= max_rand:
+        raise ValueError(f"min_rand (given {min_rand}) must be smaller than max_rand (given {max_rand})")
+    tester = FuzzingTester(min_rand, max_rand, n)
     tester.run()
