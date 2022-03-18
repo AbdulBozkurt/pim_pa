@@ -84,8 +84,3 @@ def euclidean_alg(x: int, y: int) -> int:
     while y != 0:
         x, y = y, mod(x, y)
     return x
-
-
-if __name__ == '__main__':
-    # TODO better test, than whatever this is.
-    print(mod_mul(mod_inv(30, 7), 30, 7))

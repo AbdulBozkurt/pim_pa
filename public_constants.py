@@ -1,5 +1,7 @@
-import sys
-import os
+from elliptic_curve.elliptic_curve import *
+from elliptic_curve.point_element import *
+from finite_field.finite_field import *
+from finite_field.finite_field_element import *
 
 __all__ = ["EllipticCurve", "FiniteField", "PointElement", "FiniteFieldElement", "curve1", "p1", "ip", "port",
            "sub_group_size", "verbose"]
@@ -9,18 +11,6 @@ ip = "127.0.0.1"
 port = 10666
 verbose = True
 
-sys.path.insert(0, os.getcwd())
-sys.path.append("..")
-
-import elliptic_curve.elliptic_curve
-import elliptic_curve.point_element
-import finite_field.finite_field
-import finite_field.finite_field_element
-
-EllipticCurve = elliptic_curve.elliptic_curve.EllipticCurve
-FiniteField = finite_field.finite_field.FiniteField
-PointElement = elliptic_curve.point_element.PointElement
-FiniteFieldElement = finite_field.finite_field_element.FiniteFieldElement
 
 field = FiniteField(13)
 curve_param_a = FiniteFieldElement(2, field)
