@@ -1,6 +1,5 @@
-import finite_field.finite_field
 import mod_arith.modarith as mod
-from finite_field.finite_field import FiniteField
+from finite_field.finite_field import FiniteField, get_safe_field
 __all__ = ["FiniteFieldElement"]
 
 
@@ -56,8 +55,9 @@ class FiniteFieldElement:
         for i in range(len(a) - len(b)):
             b.append(0)
         result = list()
-        for i, e in enumerate(reversed(b)):
-            result.append(mod.mod((e - a[i]), self.field.p))
+        b = list(reversed(b))
+        for i, e in enumerate(a):
+            result.append(mod.mod((e - b[i]), self.field.p))
         return FiniteFieldElement(result, self.field)
 
     def __mul__(self, other):
@@ -84,8 +84,8 @@ class FiniteFieldElement:
 
 
 if __name__ == '__main__':
-    e1 = FiniteFieldElement([10], finite_field.get_safe_field())
-    e2 = FiniteFieldElement([3], finite_field.get_safe_field())
+    e1 = FiniteFieldElement([10], get_safe_field())
+    e2 = FiniteFieldElement([3], get_safe_field())
     print(e1+e2)
     print(e1-e2)
     print(e1*e2)
