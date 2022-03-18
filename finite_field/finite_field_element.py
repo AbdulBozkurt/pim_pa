@@ -5,7 +5,7 @@ __all__ = ["FiniteFieldElement"]
 
 class FiniteFieldElement:
 
-    def __init__(self, e=[], field=None):
+    def __init__(self, e, field):
         if not isinstance(e, list):
             raise ValueError('The given element object is not of type list')
         if not isinstance(field, FiniteField):
