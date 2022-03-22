@@ -29,4 +29,3 @@ element2 = FiniteFieldElement([e2], field)
 element3 = FiniteFieldElement([e3], field)
 p1 = PointElement(element1, element2, element3, curve1)
 sub_group_size = 340282366762482138443322565580356624661
-print(p1)
