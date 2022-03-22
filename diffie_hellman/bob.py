@@ -1,3 +1,4 @@
+import hashlib
 import socket
 import random
 
@@ -55,6 +56,8 @@ def main():
         s.close()
     result = d * q_alice
     print(f"Resulting point: {result}")
+    hash_ = hashlib.sha512(str(result).encode()).hexdigest()
+    print(f"Resulting hash: {hash_}")
 
 
 if __name__ == "__main__":
