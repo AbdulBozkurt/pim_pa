@@ -1,5 +1,4 @@
 from finite_field.finite_field_element import FiniteFieldElement
-from finite_field.finite_field import get_safe_field
 __all__ = ["EllipticCurve"]
 
 
@@ -26,11 +25,3 @@ class EllipticCurve:
     def __eq__(self, other):
         """Checks, whether the curve is equal to another one."""
         return self.a == other.a and self.b == other.b
-
-
-if __name__ == '__main__':
-    field = get_safe_field()
-    param_a = FiniteFieldElement([2], get_safe_field())
-    param_b = FiniteFieldElement([3], get_safe_field())
-    weierstrass = EllipticCurve(param_a, param_b)
-    print(weierstrass)

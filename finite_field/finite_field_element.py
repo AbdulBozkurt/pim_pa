@@ -1,5 +1,6 @@
 import mod_arith.modarith as mod
-from finite_field.finite_field import FiniteField, get_safe_field
+from finite_field.finite_field import FiniteField
+
 __all__ = ["FiniteFieldElement"]
 
 
@@ -81,11 +82,3 @@ class FiniteFieldElement:
             raise ValueError(f"Cannot compare two elements from different finite fields. Given bases were {self.field} "
                              f"and {other.field}.")
         return self.e == other.e
-
-
-if __name__ == '__main__':
-    e1 = FiniteFieldElement([10], get_safe_field())
-    e2 = FiniteFieldElement([3], get_safe_field())
-    print(e1+e2)
-    print(e1-e2)
-    print(e1*e2)

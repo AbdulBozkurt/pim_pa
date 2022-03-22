@@ -1,6 +1,6 @@
 import finite_field.prime_numbers as prime_numbers
 import mod_arith.modarith as mod
-__all__ = ["FiniteField", "get_safe_field"]
+__all__ = ["FiniteField", "get_safe_field", "generate_poly"]
 
 
 def clean_list(a: list) -> list:

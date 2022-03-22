@@ -17,7 +17,7 @@ def find_prime(bit: int) -> int:
     n = 0
     r = 2**bit
     while True:
-        n = random.randrange(r/4, r)
+        n = random.randrange(r//4, r)
         if prime_test(n):
             break
     return n

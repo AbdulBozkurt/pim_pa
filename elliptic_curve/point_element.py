@@ -1,9 +1,17 @@
+import json
+
+from elliptic_curve.elliptic_curve import EllipticCurve
 from finite_field.finite_field_element import FiniteFieldElement
-from finite_field.finite_field import get_safe_field
-from elliptic_curve import EllipticCurve
-from algorithm import get_daa_bits
-from mod_arith.modarith import extended_euclidean_alg
+
 __all__ = ["PointElement"]
+
+
+def get_daa_bits(n: int):
+    """ Generates the binary digits of n, starting
+    from the least significant bit."""
+    while n:
+        yield n & 1
+        n >>= 1
 
 
 class PointElement:
@@ -21,6 +29,7 @@ class PointElement:
     def __str__(self) -> str:
         return "(Point: ({0}:{1}:{2}))".format(self.x.e, self.y.e, self.z.e)
 
+    # noinspection PyPep8Naming
     def __add__(self, other: "PointElement") -> "PointElement":
         """Adds two points to retrieve a new one.
         Performs different calculations depending on the coordinates.
@@ -142,24 +151,6 @@ class PointElement:
             tmp = tmp + self
         return tmp
 
-    def double_and_add(self, n: int) -> "PointElement":
-        """Calculates the scalar product of the point with a given Integer
-        in a more efficient way by using the double-and-add-algorithm.
-        INSERT DESCRIPTION HERE"""
-        if not self.is_on_curve():
-            raise ValueError('The given point is not on the curve.')
-        if n < 1:
-            raise ValueError('n must be a positive integer.')
-
-        result = self.point_at_infinity()
-        tmp = self
-
-        for i in get_daa_bits(n):
-            if i == 1:
-                result = result + tmp
-            tmp = tmp + tmp
-        return result
-
     def generate_sub_group(self) -> list:
         """Generates all unique points, that can be calculated by adding
         the point to itself."""
@@ -177,51 +168,13 @@ class PointElement:
         return
 
     def serialize(self):
-        return f"{self.x.e} {self.y.e} {self.z.e}"
+        return json.dumps({"x": self.x.e, "y": self.y.e, "z": self.z.e})
 
     @staticmethod
     def deserialize(string_representation: str, curve: EllipticCurve) -> "PointElement":
-        x, y, z = tuple(FiniteFieldElement(int(i), curve.field) for i in string_representation.split(" "))
+        json_dict = json.loads(string_representation)
+        x = FiniteFieldElement(json_dict['x'], curve.field)
+        y = FiniteFieldElement(json_dict['y'], curve.field)
+        z = FiniteFieldElement(json_dict['z'], curve.field)
+#        x, y, z = tuple(FiniteFieldElement(int(i), curve.field) for i in string_representation.split(" "))
         return PointElement(x, y, z, curve)
-
-
-if __name__ == '__main__':
-    field = get_safe_field()
-    a = 340282366762482138434845932244680310780  # curve-parameter a
-    b = 308990863222245658030922601041482374867  # curve-parameter b
-    curve_param_a = FiniteFieldElement([a], field)
-    curve_param_b = FiniteFieldElement([b], field)
-    curve1 = EllipticCurve(curve_param_a, curve_param_b)
-
-    e1 = 29408993404948928992877151431649155974  # x-coordinate
-    e2 = 275621562871047521857442314737465260675  # y-coordinate
-    e3 = 1  # z-coordinate
-    element1 = FiniteFieldElement([e1], field)
-    element2 = FiniteFieldElement([e2], field)
-    element3 = FiniteFieldElement([e3], field)
-    p1 = PointElement(element1, element2, element3, curve1)
-    p2 = p1 + p1
-    p3 = p1 - p2
-    p4 = p2 + p2
-    p5 = p1 - p1
-    scalar = 340282366762482138443322565580356624661
-    p6 = scalar * p1
-
-    print(" P1: %s" % p1)
-    print("-P1: %s" % -p1)
-    print(" P2: %s" % p2)
-    print("P1-P2: %s" % p3)
-    print("P2+P2: %s" % p4)
-    print("P1-P1: %s" % p5)
-    print("%s*P1: %s\n" % (scalar, p6))
-
-    print("P1 on curve: %s" % p1.is_on_curve())
-    print("P2 on curve: %s" % p2.is_on_curve())
-    print("P1-P2 on curve: %s" % p3.is_on_curve())
-    print("P2+P2 on curve: %s" % p4.is_on_curve())
-    print("P1-P1 on curve: %s" % p5.is_on_curve())
-    # Point: ([111614102573067424927652398299318724279]:[171041964748245813741138639535351797219])
-    print("%s*P1 on curve: %s" % (scalar, p6.is_on_curve()))
-    # print("%s*P1 (scalar): %s" % (scalar, p1.scalar_mul(scalar)))
-    # print("%s*P1 (daa): %s" % (scalar, p1.double_and_add(scalar)))
-    # print("Order of Subgroup of P1: %s" % len(p1.generate_sub_group()))
