@@ -42,7 +42,7 @@ def generate_poly(factors: dict, p: int) -> list:
     poly = [0 for x in range(max(factors)+1)]
     for i in factors:
         poly[i] = factors[i] % p
-    return list(reversed(poly))
+    return list(poly)
 
 
 def get_safe_field():
@@ -64,7 +64,7 @@ class FiniteField:
         self.poly = clean_list(poly)
         # generate the reducing-polynomial
         r_pol = list()
-        for f in poly[1:]:
+        for f in poly[:len(poly)-1]:
             index = mod.mod((-f * pow(poly[0], -1, self.p)), self.p)
             r_pol.append(index)
         self.r_pol = r_pol
@@ -84,7 +84,7 @@ class FiniteField:
 
     def reduce_poly(self, a: list):
         # clean the given lists of leading zeros
-        a = clean_list(a)
+        a = list(reversed(clean_list(a)))
 
         while len(a) >= len(self.poly):
             factor = a[0]
@@ -97,5 +97,5 @@ class FiniteField:
 
         for i in range(len(a)):
             a[i] = mod.mod(a[i], self.p)
-        return a
+        return list(reversed(a))
 
