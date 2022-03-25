@@ -27,7 +27,7 @@ class PointElement:
         self.curve = curve
 
     def __str__(self) -> str:
-        return "(Point: ({0}:{1}:{2}))".format(self.x.e, self.y.e, self.z.e)
+        return "(Point: ({0}:{1}:{2}))".format(self.x, self.y, self.z)
 
     # noinspection PyPep8Naming
     def __add__(self, other: "PointElement") -> "PointElement":
@@ -154,18 +154,13 @@ class PointElement:
     def generate_sub_group(self) -> list:
         """Generates all unique points, that can be calculated by adding
         the point to itself."""
-        # TODO: check if prime
+
         tmp = self
         sub_group = [tmp]
         while tmp != self.point_at_infinity():
             tmp = self + tmp
             sub_group.append(tmp)
         return sub_group
-
-    def get_generator(self):
-        """Calculates the generator of an elliptic curve by finding the
-        point, that equals the amount of points on its curve."""
-        return
 
     def serialize(self):
         return json.dumps({"x": self.x.e, "y": self.y.e, "z": self.z.e})
@@ -176,5 +171,5 @@ class PointElement:
         x = FiniteFieldElement(json_dict['x'], curve.field)
         y = FiniteFieldElement(json_dict['y'], curve.field)
         z = FiniteFieldElement(json_dict['z'], curve.field)
-#        x, y, z = tuple(FiniteFieldElement(int(i), curve.field) for i in string_representation.split(" "))
+
         return PointElement(x, y, z, curve)

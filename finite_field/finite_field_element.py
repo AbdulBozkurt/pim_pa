@@ -15,8 +15,11 @@ class FiniteFieldElement:
         self.e = field.reduce_poly(e)
 
     def __str__(self):
-        # TODO for polynomial
-        return "(Element: {0}, {1})".format(self.e, self.field)
+        s = ""
+        for i in range(len(self.e)):
+            s = "{0}x^{1}".format(self.e[i], i) + " + " + s
+
+        return "(Element: {0}, {1})".format(s[:-6], self.field)
 
     def __add__(self, other):
         if not isinstance(other, FiniteFieldElement):
