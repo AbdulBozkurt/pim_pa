@@ -17,22 +17,13 @@ curve_param_b = FiniteFieldElement(b, field)
 curve = EllipticCurve(curve_param_a, curve_param_b)
 
 #   Generator of the Elliptic Curve
-e1 = generate_poly({2: 5, 1: 3, 0: 4}, p)
-e2 = generate_poly({2: 2, 1: 3}, p)
+e1 = generate_poly({1: 3, 0: 4}, p)
+e2 = generate_poly({2: 6, 1: 3, 0: 1}, p)
 e3 = generate_poly({0: 1}, p)
 element1 = FiniteFieldElement(e1, field)
 element2 = FiniteFieldElement(e2, field)
 element3 = FiniteFieldElement(e3, field)
 generator = PointElement(element1, element2, element3, curve)
-
-#   Generator of the Elliptic Curve
-e1 = generate_poly({2: 6, 1: 5, 0: 2}, p)
-e2 = generate_poly({2: 2, 1: 1, 0: 2}, p)
-e3 = generate_poly({0: 1}, p)
-element1 = FiniteFieldElement(e1, field)
-element2 = FiniteFieldElement(e2, field)
-element3 = FiniteFieldElement(e3, field)
-p1 = PointElement(element1, element2, element3, curve)
 
 p2 = generator + generator
 

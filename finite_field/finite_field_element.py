@@ -19,8 +19,9 @@ class FiniteFieldElement:
             return "(Element: 0, {0})".format(self.field)
         else:
             s = ""
-            for i in range(len(self.e)):
-                s = "{0}x^{1}".format(self.e[i], i) + " + " + s
+            temp = list(reversed(self.e))
+            for i, el in enumerate(temp):
+                s = "{0}x^{1}".format(el, i) + " + " + s
             return "(Element: {0}, {1})".format(s[:-6], self.field)
 
     def __add__(self, other):

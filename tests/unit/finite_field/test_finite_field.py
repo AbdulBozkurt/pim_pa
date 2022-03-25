@@ -11,4 +11,10 @@ if __name__ == '__main__':
     p = 7
     poly = generate_poly(temp_poly, p)
 
-    print(FiniteFieldElement(poly, field))
+    red = FiniteFieldElement(poly, field)
+    multi = red*red
+    added = red+red
+
+    print("Done")
+
+
