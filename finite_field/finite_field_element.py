@@ -21,8 +21,8 @@ class FiniteFieldElement:
             s = ""
             temp = list(reversed(self.e))
             for i, el in enumerate(temp):
-                s = "{0}x^{1}".format(el, i) + " + " + s
-            return "(Element: {0}, {1})".format(s[:-6], self.field)
+                s = "{0}*x^{1}".format(el, i) + " + " + s
+            return "(Element: {0}, {1})".format(s[:-7], self.field)
 
     def __add__(self, other):
         if not isinstance(other, FiniteFieldElement):
@@ -52,20 +52,11 @@ class FiniteFieldElement:
         if self.field != other.field:
             raise ArithmeticError('Cannot add two elements from different finite fields. '
                                   'Given bases were {0} and {1}'.format(self.field, other.field))
-        a = self.e
-        b = other.e
-        if len(a) < len(b):
-            temp = b.copy()
-            b = a.copy()
-            a = temp
-        b = list(reversed(b))
-        for i in range(len(a) - len(b)):
-            b.append(0)
-        result = list()
-        b = list(reversed(b))
-        for i, e in enumerate(a):
-            result.append(mod.mod((e - b[i]), self.field.p))
-        return FiniteFieldElement(result, self.field)
+        temp = other.e.copy()
+        for i in range(len(other.e)):
+            temp[i] = -other.e[i]
+        other = FiniteFieldElement(temp, self.field)
+        return self + other
 
     def __mul__(self, other):
         if not isinstance(other, FiniteFieldElement):

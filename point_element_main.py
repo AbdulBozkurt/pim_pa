@@ -38,8 +38,8 @@ element1 = FiniteFieldElement(e1, field)
 element2 = FiniteFieldElement(e2, field)
 element3 = FiniteFieldElement(e3, field)
 p1 = PointElement(element1, element2, element3, curve)
-p111 = generator + generator
-print("Generator: %s" % generator)
-print("P1: %s" % p1)
-print("Result: %s" % p111)
-print("P111 on curve: %s" % p111.is_on_curve())
+added = generator + generator + generator
+amultiplied = 3*generator
+# print("Generator: %s" % generator)
+# print("P1: %s" % p1)
+print("P111 on curve: %s" % added.is_on_curve(), amultiplied.is_on_curve())
