@@ -25,8 +25,7 @@ element2 = FiniteFieldElement(e2, field)
 element3 = FiniteFieldElement(e3, field)
 generator = PointElement(element1, element2, element3, curve)
 
-p2 = generator + generator
+added = generator + generator
+amul = 2*generator
 
-print("Generator: %s" % generator)
-print("P2: %s" % p2)
-print("P2 on curve: %s" % p2.is_on_curve())
+print("P2 on curve: %s" % added.is_on_curve(), amul.is_on_curve())
