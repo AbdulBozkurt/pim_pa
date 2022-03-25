@@ -70,11 +70,15 @@ def main():
             q = p1 * d
             print(f"Sending q_alice: {q}")
             conn.send(q.serialize())
-            conn.close()
             result = d * q_bob
+            conn.send(q.serialize_z())
+            data = conn.receive()
+            z = PointElement.deserialize_z(data, curve1)
+            result = result.projection(z)
             print(f"Resulting point: {result}")
             hash_ = hashlib.sha512(str(result).encode()).hexdigest()
             print(f"Resulting hash: {hash_}\n")
+            conn.close()
     finally:
         sock.close()
 

@@ -60,7 +60,7 @@ class PointElement:
             R = vv * x1z2
             A = uu * z1z2 - vvv - tmp2 * R
             x3 = v * A
-            y3 = u * (R-A) - vvv * y1z2
+            y3 = u * (R - A) - vvv * y1z2
             z3 = vvv * z1z2
 
             return PointElement(x3, y3, z3, self.curve)
@@ -80,7 +80,7 @@ class PointElement:
             B = (self.x + R) * (self.x + R) - xx - RR
             h = w * w - tmp2 * B
             x3 = h * s
-            y3 = w * (B-h) - tmp2 * RR
+            y3 = w * (B - h) - tmp2 * RR
             z3 = sss
 
             return PointElement(x3, y3, z3, self.curve)
@@ -162,8 +162,14 @@ class PointElement:
             sub_group.append(tmp)
         return sub_group
 
+    def projection(self, z: FiniteFieldElement) -> "PointElement":
+        return None
+
     def serialize(self):
         return json.dumps({"x": self.x.e, "y": self.y.e, "z": self.z.e})
+
+    def serialize_z(self):
+        return json.dumps({"z": self.z.e})
 
     @staticmethod
     def deserialize(string_representation: str, curve: EllipticCurve) -> "PointElement":
@@ -173,3 +179,8 @@ class PointElement:
         z = FiniteFieldElement(json_dict['z'], curve.field)
 
         return PointElement(x, y, z, curve)
+
+    @staticmethod
+    def deserialize_z(string_representation: str, curve: EllipticCurve) -> FiniteFieldElement:
+        json_dict = json.loads(string_representation)
+        return FiniteFieldElement(json_dict['z'], curve.field)
