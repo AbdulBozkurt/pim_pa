@@ -163,7 +163,14 @@ class PointElement:
         return sub_group
 
     def projection(self, z: FiniteFieldElement) -> "PointElement":
-        return None
+        """Multiplies the coordinates of the point with a given FiniteFieldElement."""
+        if not self.is_on_curve():
+            raise ValueError('The given point is not on the curve.')
+        x3 = self.x * z
+        y3 = self.y * z
+        z3 = self.z * z
+
+        return PointElement(x3, y3, z3, self.curve)
 
     def serialize(self):
         return json.dumps({"x": self.x.e, "y": self.y.e, "z": self.z.e})
