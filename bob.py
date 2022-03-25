@@ -55,7 +55,9 @@ def main():
         result = d * q_alice
         data = s.receive()
         z = PointElement.deserialize_z(data, curve1)
+        print(f"Received z_alice: {z}")
         s.send(result.serialize_z())
+        print(f"Sending z_alice: {result.z}")
     finally:
         s.close()
     result = result.projection(z)

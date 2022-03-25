@@ -71,9 +71,11 @@ def main():
             print(f"Sending q_alice: {q}")
             conn.send(q.serialize())
             result = d * q_bob
-            conn.send(q.serialize_z())
+            print(f"Sending z_alice: {result.z}")
+            conn.send(result.serialize_z())
             data = conn.receive()
             z = PointElement.deserialize_z(data, curve1)
+            print(f"Received z_bob: {z}")
             result = result.projection(z)
             print(f"Resulting point: {result}")
             hash_ = hashlib.sha512(str(result).encode()).hexdigest()
