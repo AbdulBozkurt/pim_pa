@@ -15,7 +15,7 @@ def clean_list(a: list) -> list:
 
 
 def multiply(a, b):
-    # initialize result polynom-array with length a + b
+    # initialize result polynomial-array with length a + b
     result = [0 for x in range(len(a) + len(b) - 1)]
     for i, a_element in enumerate(a):
         for j, b_element in enumerate(b):
@@ -47,9 +47,10 @@ def generate_poly(factors: dict, p: int) -> list:
 
 def get_safe_field():
     """Returns a FiniteField with parameters safe for use in cryptographic context"""
-    temp = {128: 2, 97: -2, 0: -1}
-    p = 340282366762482138434845932244680310783
-    poly = generate_poly(temp, p)
+    temp_poly = {19: 1, 18: 1, 17: 13, 16: 46, 15: 57, 14: 94, 13: 7, 12: 19, 11: 100, 10: 15,
+                 9: 15, 8: 51, 7: 66, 6: 82, 5: 8, 4: 92, 3: 4, 2: 3, 1: 1, 0: 80}
+    p = 103
+    poly = generate_poly(temp_poly, p)
     return FiniteField(p, poly)
 
 
@@ -71,8 +72,14 @@ class FiniteField:
         # TODO maybe check for irreducible polynomial
 
     def __str__(self):
-        # TODO implement for polynomial
-        return "Base: {0}".format(self.p)
+        if not self.poly:
+            return "(Base: {0}, Poly: 0)".format(self.p)
+        else:
+            s = ""
+            temp = list(reversed(self.poly))
+            for i, el in enumerate(temp):
+                s = "{0}*x^{1}".format(el, i) + " + " + s
+            return "Field: (Base: {0}, Poly: {1})".format(self.p, s[:-7])
 
     def __eq__(self, other):
         if not isinstance(other, FiniteField):
@@ -98,4 +105,3 @@ class FiniteField:
         for i in range(len(a)):
             a[i] = mod.mod(a[i], self.p)
         return a
-

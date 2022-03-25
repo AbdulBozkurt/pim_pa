@@ -27,7 +27,7 @@ class PointElement:
         self.curve = curve
 
     def __str__(self) -> str:
-        return "(Point: ({0}:{1}:{2}))".format(self.x, self.y, self.z)
+        return "(Point: (\nx = {0}\ny = {1}\nz = {2}))".format(self.x, self.y, self.z)
 
     # noinspection PyPep8Naming
     def __add__(self, other: "PointElement") -> "PointElement":
@@ -38,13 +38,13 @@ class PointElement:
         #     raise ValueError('One or more points are not on the curve.')
 
         # handles addition with Point at Infinity
-        if self.z.e == 0 and other.z.e == 0:
-            return self.point_at_infinity()
-        elif self.z != other.z:
-            if other.z.e == 0:
-                return self
-            else:
+        if self.z == 0 or other.z == 0:
+            if self.z == 0 and other.z == 0:
+                return self.point_at_infinity()
+            elif self.z == 0:
                 return other
+            elif other.z == 0:
+                return self
 
         if self.x != other.x:
             tmp2 = FiniteFieldElement([2], self.x.field)

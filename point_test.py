@@ -25,7 +25,7 @@ element2 = FiniteFieldElement(e2, field)
 element3 = FiniteFieldElement(e3, field)
 generator = PointElement(element1, element2, element3, curve)
 
-added = generator + generator
-amul = 2*generator
+added = generator + generator + generator + generator + generator + generator + generator + generator + generator + generator
+amul = 10*generator
 
 print("P2 on curve: %s" % added.is_on_curve(), amul.is_on_curve())

@@ -22,7 +22,7 @@ class FiniteFieldElement:
             temp = list(reversed(self.e))
             for i, el in enumerate(temp):
                 s = "{0}*x^{1}".format(el, i) + " + " + s
-            return "(Element: {0}, {1})".format(s[:-7], self.field)
+            return "(Element: {0},\n {1})".format(s[:-7], self.field)
 
     def __add__(self, other):
         if not isinstance(other, FiniteFieldElement):
@@ -74,8 +74,18 @@ class FiniteFieldElement:
 
     def __eq__(self, other):
         if isinstance(other, int):
-            return self.e == other
+            if other == 0:
+                return len(self.e) == 0
+            else:
+                raise ValueError("Cannot compare FiniteFieldElement to integers.")
+        if not isinstance(other, FiniteFieldElement):
+            raise ValueError("Cannot compare FiniteFieldElement to object of type {0}".format(type(other)))
         if self.field != other.field:
             raise ValueError(f"Cannot compare two elements from different finite fields. Given bases were {self.field} "
                              f"and {other.field}.")
-        return self.e == other.e
+        if len(self.e) != len(other.e):
+            return False
+        for i, j in zip(self.e, other.e):
+            if i != j:
+                return False
+        return True
