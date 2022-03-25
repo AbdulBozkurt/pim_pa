@@ -28,30 +28,37 @@ element2 = FiniteFieldElement(e2, field)
 element3 = FiniteFieldElement(e3, field)
 generator = PointElement(element1, element2, element3, curve)
 
-p1 = 18374 * generator
-print(generator)
-print(p1)
-print(generator.is_on_curve())
-print(p1.is_on_curve())
-# p2 = p1 + p1
-# p3 = p1 - p2
-# p4 = p2 + p2
-# p5 = p1 - p1
+#   Another Point on the Elliptic Curve
+e1 = generate_poly({18: 4, 17: 60, 16: 52, 15: 16, 14: 93, 13: 52, 12: 65, 11: 68, 10: 30,
+                    9: 32, 8: 34, 7: 100, 6: 30, 5: 69, 4: 30, 3: 23, 2: 7, 1: 58, 0: 35}, p)
+e2 = generate_poly({18: 61, 17: 76, 16: 31, 15: 29, 14: 66, 13: 73, 12: 81, 11: 7, 10: 93,
+                    9: 83, 8: 2, 7: 48, 6: 87, 5: 52, 4: 39, 3: 67, 2: 16, 1: 13, 0: 85}, p)
+e3 = generate_poly({0: 1}, p)
+element1 = FiniteFieldElement(e1, field)
+element2 = FiniteFieldElement(e2, field)
+element3 = FiniteFieldElement(e3, field)
+p1 = PointElement(element1, element2, element3, curve)
+# p1 = 18374 * generator
+
+p2 = p1 + p1
+p3 = p1 - p2
+p4 = p2 + p2
+p5 = p1 - p1
 # scalar = 34
 # p6 = scalar * p1
 #
-# print(" P1: %s" % p1)
-# print("-P1: %s" % -p1)
-# print(" P2: %s" % p2)
-# print("P1-P2: %s" % p3)
-# print("P2+P2: %s" % p4)
-# print("P1-P1: %s" % p5)
+print(" P1: %s" % p1)
+print("-P1: %s" % -p1)
+print(" P2: %s" % p2)
+print("P1-P2: %s" % p3)
+print("P2+P2: %s" % p4)
+print("P1-P1: %s" % p5)
 # print("%s*P1: %s\n" % (scalar, p6))
 #
-# print("P1 on curve: %s" % p1.is_on_curve())
-# print("P2 on curve: %s" % p2.is_on_curve())
-# print("P1-P2 on curve: %s" % p3.is_on_curve())
-# print("P2+P2 on curve: %s" % p4.is_on_curve())
-# print("P1-P1 on curve: %s" % p5.is_on_curve())
-# # Point: ([111614102573067424927652398299318724279]:[171041964748245813741138639535351797219])
+print("P1 on curve: %s" % p1.is_on_curve())
+print("P2 on curve: %s" % p2.is_on_curve())
+print("P1-P2 on curve: %s" % p3.is_on_curve())
+print("P2+P2 on curve: %s" % p4.is_on_curve())
+print("P1-P1 on curve: %s" % p5.is_on_curve())
+
 # print("%s*P1 on curve: %s" % (scalar, p6.is_on_curve()))
