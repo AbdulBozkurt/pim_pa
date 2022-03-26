@@ -30,13 +30,12 @@ class PointElement:
     def __str__(self) -> str:
         return "(Point: (\nx = {0}\ny = {1}\nz = {2}))".format(self.x, self.y, self.z)
 
-    # noinspection PyPep8Naming
     def __add__(self, other: "PointElement") -> "PointElement":
         """Adds two points to retrieve a new one.
         Performs different calculations depending on the coordinates.
         """
-        # if not self.is_on_curve() or not other.is_on_curve():
-        #     raise ValueError('One or more points are not on the curve.')
+        if not self.is_on_curve() or not other.is_on_curve():
+            raise ValueError('One or more points are not on the curve.')
 
         # handles addition with Point at Infinity
         if self.z == 0 or other.z == 0:
