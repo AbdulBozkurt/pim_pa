@@ -15,12 +15,13 @@ def get_daa_bits(n: int):
 
 
 class PointElement:
-    def __init__(self, x: FiniteFieldElement, y: FiniteFieldElement, z: FiniteFieldElement, curve: EllipticCurve):
+    def __init__(self, x: FiniteFieldElement, y: FiniteFieldElement,
+                 z: FiniteFieldElement, curve: EllipticCurve):
         """Initializes an PointElement by providing it with three coordinates of type
-        FiniteFieldElement and the corresponding curve. Checks first, whether the fields of the
-        given elements are equal. If they are not equal, then raise ValueError."""
-        if x.field != y.field:
-            raise ValueError('The bases of  the given elements are not equal.')
+        FiniteFieldElement and the corresponding curve. Checks first, whether the fields
+        of the given elements are equal. If they are not equal, then raise ValueError."""
+        if x.field != y.field or x.field != z.field:
+            raise ValueError('The bases of the given elements are not equal.')
         self.x = x
         self.y = y
         self.z = z
