@@ -1,5 +1,7 @@
 import mod_arith.modarith as mod
 from finite_field.finite_field import FiniteField
+from sympy.polys.domains import ZZ
+from sympy.polys.galoistools import gf_gcdex
 
 __all__ = ["FiniteFieldElement"]
 
@@ -71,6 +73,17 @@ class FiniteFieldElement:
             for j, b_element in enumerate(other.e):
                 result[i + j] += a_element * b_element
         return FiniteFieldElement(result, self.field)
+
+    def __truediv__(self, other):
+        if not isinstance(other, FiniteFieldElement):
+            raise ValueError('Tried to add a object that is not of type FiniteFiledElement but of type: {0}'
+                             .format(type(other)))
+        if self.field != other.field:
+            raise ArithmeticError('Cannot subtract two elements from different finite fields. '
+                                  'Given bases were {0} and {1}'.format(self.field, other.field))
+        s, t, g = gf_gcdex(ZZ.map(other.e), ZZ.map(self.field.poly), self.field.p, ZZ)
+        inverse = FiniteFieldElement(s, self.field)
+        return inverse * self
 
     def __eq__(self, other):
         if isinstance(other, int):
