@@ -1,6 +1,7 @@
 import hashlib
 import socket
 import random
+import time
 
 from public_constants import *
 
@@ -43,7 +44,9 @@ class DiffieHellmanClientSocket:
 def main():
     d = random.randint(1, sub_group_size - 1)
     print(f"Secret d: {d}")
+    start = time.time()
     q = p1 * d
+    print(time.time() - start)
     s = DiffieHellmanClientSocket(ip, port, verbose)
     s.connect()
     try:
@@ -53,14 +56,8 @@ def main():
         q_alice = PointElement.deserialize(q_alice_str, curve1)
         print(f"Received q_alice: {q_alice}")
         result = d * q_alice
-        data = s.receive()
-        z = PointElement.deserialize_z(data, curve1)
-        print(f"Received z_alice: {z}")
-        s.send(result.serialize_z())
-        print(f"Sending z_alice: {result.z}")
     finally:
         s.close()
-    result = result.projection(z)
     print(f"Resulting point: {result}")
     hash_ = hashlib.sha512(str(result).encode()).hexdigest()
     print(f"Resulting hash: {hash_}")

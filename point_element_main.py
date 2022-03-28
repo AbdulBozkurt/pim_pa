@@ -1,3 +1,5 @@
+import time
+
 from elliptic_curve.elliptic_curve import EllipticCurve
 from elliptic_curve.point_element import PointElement
 from finite_field.finite_field import get_safe_field, generate_poly, FiniteField
@@ -39,7 +41,8 @@ element2 = FiniteFieldElement(e2, field)
 element3 = FiniteFieldElement(e3, field)
 p1 = PointElement(element1, element2, element3, curve)
 added = generator + generator + generator
-amultiplied = 18374*generator
-# print("Generator: %s" % generator)
-print("Mul: %s" % amultiplied)
+start = time.time()
+amultiplied = 47675188056598523784430630440275614654*generator
+
+print("Took {0} seconds to calc".format(time.time()-start))
 print("Point on curve: %s" % added.is_on_curve(), amultiplied.is_on_curve())

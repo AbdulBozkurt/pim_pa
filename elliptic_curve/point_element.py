@@ -28,7 +28,7 @@ class PointElement:
         self.curve = curve
 
     def __str__(self) -> str:
-        return "(Point: (\nx = {0}\ny = {1}\nz = {2}))".format(self.x, self.y, self.z)
+        return "(Point: (\nx = {0}\ny = {1})".format(self.x, self.y)
 
     def __add__(self, other: "PointElement") -> "PointElement":
         """Adds two points to retrieve a new one.
@@ -46,7 +46,6 @@ class PointElement:
             elif other.z == 0:
                 return self
 
-        e1 = FiniteFieldElement([1], self.x.field)
         e2 = FiniteFieldElement([2], self.x.field)
         e3 = FiniteFieldElement([3], self.x.field)
         if self.x != other.x:
@@ -133,10 +132,10 @@ class PointElement:
         """Checks, whether the point is on its elliptic curve, by inserting them
         into the curve. If both sides of the equation are not equal,
         then raise ValueError."""
-        left = (self.y * self.y * self.z)
-        right = (self.x * self.x * self.x
-                 + self.curve.a * self.x * self.z * self.z
-                 + self.curve.b * self.z * self.z * self.z)
+        if not self.z.e:
+            return True
+        left = self.y * self.y
+        right = self.x * self.x * self.x + self.curve.a * self.x + self.curve.b
         return left == right
 
     def scalar_mul(self, n: int) -> "PointElement":
@@ -163,21 +162,8 @@ class PointElement:
             sub_group.append(tmp)
         return sub_group
 
-    def projection(self, z: FiniteFieldElement) -> "PointElement":
-        """Multiplies the coordinates of the point with a given FiniteFieldElement."""
-        if not self.is_on_curve():
-            raise ValueError('The given point is not on the curve.')
-        x3 = self.x * z
-        y3 = self.y * z
-        z3 = self.z * z
-
-        return PointElement(x3, y3, z3, self.curve)
-
     def serialize(self):
         return json.dumps({"x": self.x.e, "y": self.y.e, "z": self.z.e})
-
-    def serialize_z(self):
-        return json.dumps({"z": self.z.e})
 
     @staticmethod
     def deserialize(string_representation: str, curve: EllipticCurve) -> "PointElement":
@@ -187,8 +173,3 @@ class PointElement:
         z = FiniteFieldElement(json_dict['z'], curve.field)
 
         return PointElement(x, y, z, curve)
-
-    @staticmethod
-    def deserialize_z(string_representation: str, curve: EllipticCurve) -> FiniteFieldElement:
-        json_dict = json.loads(string_representation)
-        return FiniteFieldElement(json_dict['z'], curve.field)
