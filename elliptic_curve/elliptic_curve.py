@@ -20,7 +20,7 @@ class EllipticCurve:
         self.field = a.field
 
     def __str__(self):
-        return "(Curve: y^2z = x^3 + {0}xz^2 + {1}z^3)".format(self.a.e, self.b.e)
+        return "(Curve: y^2 = x^3 + {0}x + {1})".format(self.a.e, self.b.e)
 
     def __eq__(self, other):
         """Checks, whether the curve is equal to another one."""

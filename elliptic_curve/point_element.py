@@ -46,8 +46,11 @@ class PointElement:
             elif other.z == 0:
                 return self
 
+        e1 = FiniteFieldElement([1], self.x.field)
+        e2 = FiniteFieldElement([2], self.x.field)
+        e3 = FiniteFieldElement([3], self.x.field)
         if self.x != other.x:
-            tmp2 = FiniteFieldElement([2], self.x.field)
+
             # 14M for addition: 12M + 2S
             y1z2 = self.y * other.z
             x1z2 = self.x * other.z
@@ -58,32 +61,30 @@ class PointElement:
             vv = v * v
             vvv = v * vv
             R = vv * x1z2
-            A = uu * z1z2 - vvv - tmp2 * R
+            A = uu * z1z2 - vvv - e2 * R
             x3 = v * A
             y3 = u * (R - A) - vvv * y1z2
             z3 = vvv * z1z2
 
-            return PointElement(x3, y3, z3, self.curve)
+            return PointElement(x3/z3, y3/z3, z3/z3, self.curve)
 
         elif self == other and self.y != 0:
-            tmp3 = FiniteFieldElement([3], self.x.field)
-            tmp2 = FiniteFieldElement([2], self.x.field)
             # 11M for doubling: 5M + 6S
             xx = self.x * self.x
             zz = self.z * self.z
-            w = self.curve.a * zz + tmp3 * xx
-            s = tmp2 * self.y * self.z
+            w = self.curve.a * zz + e3 * xx
+            s = e2 * self.y * self.z
             ss = s * s
             sss = s * ss
             R = self.y * s
             RR = R * R
             B = (self.x + R) * (self.x + R) - xx - RR
-            h = w * w - tmp2 * B
+            h = w * w - e2 * B
             x3 = h * s
-            y3 = w * (B - h) - tmp2 * RR
+            y3 = w * (B - h) - e2 * RR
             z3 = sss
 
-            return PointElement(x3, y3, z3, self.curve)
+            return PointElement(x3/z3, y3/z3, z3/z3, self.curve)
 
         else:
             return self.point_at_infinity()
