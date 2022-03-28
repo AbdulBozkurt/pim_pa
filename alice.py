@@ -1,4 +1,6 @@
 import socket
+import time
+
 from public_constants import *
 import random
 import hashlib
@@ -62,19 +64,19 @@ def main():
     try:
         while 1:
             d = random.randint(1, sub_group_size - 1)
+            q = p1 * d
             print(f"Secret d: {d}\nAwaiting connection...")
             conn, address = sock.accept()
             data = conn.receive()
             q_bob = PointElement.deserialize(data, curve1)
             print(f"Received q_bob: {q_bob}")
-            q = p1 * d
             print(f"Sending q_alice: {q}")
             conn.send(q.serialize())
+            conn.close()
             result = d * q_bob
             print(f"Resulting point: {result}")
             hash_ = hashlib.sha512(str(result).encode()).hexdigest()
             print(f"Resulting hash: {hash_}\n")
-            conn.close()
     finally:
         sock.close()
 
