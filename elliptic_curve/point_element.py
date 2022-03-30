@@ -6,14 +6,6 @@ from finite_field.finite_field_element import FiniteFieldElement
 __all__ = ["PointElement"]
 
 
-def get_daa_bits(n: int):
-    """ Generates the binary digits of n, starting
-    from the least significant bit."""
-    while n:
-        yield n & 1
-        n >>= 1
-
-
 class PointElement:
     def __init__(self, x: FiniteFieldElement, y: FiniteFieldElement,
                  z: FiniteFieldElement, curve: EllipticCurve):
@@ -28,7 +20,10 @@ class PointElement:
         self.curve = curve
 
     def __str__(self) -> str:
-        return "(Point: (\nx = {0}\ny = {1})".format(self.x, self.y)
+        if self == self.point_at_infinity():
+            return "(Point at Infinity)"
+        else:
+            return "(Point: (\nx = {0}\ny = {1})".format(self.x, self.y)
 
     def __add__(self, other: "PointElement") -> "PointElement":
         """Adds two points to retrieve a new one.
@@ -106,21 +101,26 @@ class PointElement:
 
     def __mul__(self, other: int) -> "PointElement":
         """Calculates the scalar product of the point with a given Integer
-        in a more efficient way by using the double-and-add-algorithm.
-        INSERT DESCRIPTION HERE"""
+        in a more efficient way by using the double-and-add-algorithm."""
         if not self.is_on_curve():
             raise ValueError('The given point is not on the curve.')
-        if other < 1:
+        if other < 0:
             raise ValueError('n must be a positive integer.')
 
-        result = self.point_at_infinity()
-        tmp = self
+        A = other
+        B = self.point_at_infinity()
+        C = self
 
-        for i in get_daa_bits(other):
-            if i == 1:
-                result = result + tmp
-            tmp = tmp + tmp
-        return result
+        while A != 0:
+            if A % 2 == 0:
+                A = A // 2
+                B = B
+                C = C + C
+            elif A % 2 == 1:
+                A = A - 1
+                B = B + C
+                C = C
+        return B
 
     def __rmul__(self, other: int) -> "PointElement":
         return self * other
