@@ -169,15 +169,6 @@ class FuzzingTester:
                 return
             else:
                 return modarith.mod, (x, k), None, err, "ZeroDivisionError despite k != 0"
-        except ValueError as err:
-            if k < 0:
-                return
-            else:
-                return modarith.mod, (x, k), None, err, ""
-        if k == 0:
-            return modarith.mod, (x, k), result, None, "expected ZeroDivisionError, because k == 0"
-        if k < 0:
-            return modarith.mod, (x, k), result, None, "expected ValueError, because k < 0"
         if result != x % k:
             return modarith.mod, (x, k), result, None, ""
 
