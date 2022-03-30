@@ -43,12 +43,12 @@ class DiffieHellmanClientSocket:
 def main():
     d = random.randint(1, sub_group_size - 1)
     print(f"Secret d: {d}")
-    q = p1 * d
+    q_bob = q * d
     s = DiffieHellmanClientSocket(ip, port, verbose)
     s.connect()
     try:
-        print(f"Sending q_bob: {q}")
-        s.send(q.serialize())
+        print(f"Sending q_bob: {q_bob}")
+        s.send(q_bob.serialize())
         q_alice_str = s.receive()
         q_alice = PointElement.deserialize(q_alice_str, curve1)
         print(f"Received q_alice: {q_alice}")

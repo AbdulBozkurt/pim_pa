@@ -3,7 +3,7 @@ from elliptic_curve.point_element import *
 from finite_field.finite_field import *
 from finite_field.finite_field_element import *
 
-__all__ = ["EllipticCurve", "FiniteField", "PointElement", "FiniteFieldElement", "curve1", "p1", "ip", "port",
+__all__ = ["EllipticCurve", "FiniteField", "PointElement", "FiniteFieldElement", "curve1", "q", "ip", "port",
            "sub_group_size", "verbose"]
 
 # change the following values, if you want to change the ip, port, or if you enable/disable verbose printing
@@ -28,6 +28,6 @@ e3 = generate_poly({0: 1}, field.p)
 element1 = FiniteFieldElement(e1, field)
 element2 = FiniteFieldElement(e2, field)
 element3 = FiniteFieldElement(e3, field)
-p1 = PointElement(element1, element2, element3, curve1)
+q = PointElement(element1, element2, element3, curve1)
 
 sub_group_size = 175350605307710078811724140841853552259
