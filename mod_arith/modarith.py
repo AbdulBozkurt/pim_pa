@@ -9,7 +9,7 @@ def normalize_params(x: int, y: int, k: int) -> Tuple[int, int, int]:
     mod k; and k will be checked whether it is greater than 1."""
     if k <= 1:
         raise ValueError(f"Parameter k should not be <= 1. Given: {k}")
-    return (x % k), y % k, k
+    return (x % k), (y % k), k
 
 
 def mod_add(x: int, y: int, k: int) -> int:

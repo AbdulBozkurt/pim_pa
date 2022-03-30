@@ -33,7 +33,7 @@ class FuzzingTester:
             return random.randint(self.min_rand, self.max_rand)
         failure_count: int = 0
         for i in range(self.n):
-            if i % (self.n // 100) == 0 or True:
+            if i % (self.n // 100) == 0:
                 percentage = (i * 100) // self.n
                 print(f"\r[{percentage: >3}%]: run #[{i: >{len(str(self.n))}}/{self.n}] currently", flush=True, end="")
             x: int = get_random_value()
