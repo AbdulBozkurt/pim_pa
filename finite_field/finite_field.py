@@ -8,7 +8,7 @@ def prime_test(p: int) -> bool:
     for i in range(100):
         a = random.randrange(1, p-1)
         # TODO change to power from mod_arith
-        if pow(a, p-1, p) != 1:
+        if mod.mod_pow(a, p-1, p) != 1:
             return False
     return True
 
@@ -25,11 +25,11 @@ def clean_list(a: list) -> list:
 
 
 def multiply(a: list, b: list, p: int) -> list:
-    result = [0 for _ in range(len(a) + len(b) - 1)]
+    result = [0] * (len(a) + len(b) - 1)
     for i, a_element in enumerate(a):
         for j, b_element in enumerate(b):
-            result[i+j] += mod.mod_mul(a_element, b_element, p)
-    return result
+            result[i+j] += a_element * b_element
+    return [i % p for i in result]
 
 
 def add(a: list, b: list, p: int) -> list:

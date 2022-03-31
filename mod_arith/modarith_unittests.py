@@ -90,6 +90,13 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(d == s * x + t * y, f"results d = {d}, s = {s} and t = {t} did not satisfy the equation "
                                             f"d == s * x + t * y with x = {x} and y = {y}")
 
+    def test_mod_pow(self):
+        x = 2
+        y = 10
+        k = 10
+        result = mod_pow(x, y, k)
+        self.assertEqual(result, pow(x, y, k))
+
 
 if __name__ == '__main__':
     unittest.main()

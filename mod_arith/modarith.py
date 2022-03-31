@@ -1,6 +1,6 @@
 from typing import Tuple
 
-__all__ = ["mod_add", "mod_sub", "mod_mul", "mod_inv", "mod_div", "euclidean_alg", "extended_euclidean_alg", "mod"]
+__all__ = ["mod_add", "mod_sub", "mod_mul", "mod_inv", "mod_div", "euclidean_alg", "extended_euclidean_alg", "mod", "mod_pow"]
 
 
 def normalize_params(x: int, y: int, k: int) -> Tuple[int, int, int]:
@@ -43,6 +43,22 @@ def mod_mul(x: int, y: int, k: int) -> int:
     """Calculates (x * y) mod k."""
     x, y, k = normalize_params(x, y, k)
     return (x * y) % k
+
+
+def mod_pow(x: int, y: int, k: int) -> int:
+    """Calculates (x ^ y) mod k"""
+    x, _, k = normalize_params(x, 1, k)
+    if x < 0:
+        raise ValueError(f"x must be >= 0, given: {x}")
+    if y < 0:
+        raise ValueError(f"y must be >= 0, given: {y}")
+    result: int = 1
+    while y > 0:
+        if y % 2 == 1:
+            result = (result * x) % k
+        x = (x ** 2) % k
+        y //= 2
+    return result % k
 
 
 def mod_inv(x: int, k: int) -> int:

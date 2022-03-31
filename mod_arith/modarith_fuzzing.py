@@ -26,7 +26,8 @@ class FuzzingTester:
             self.test_inv,
             self.test_div,
             self.test_euclidean,
-            self.test_mod
+            self.test_mod,
+            self.test_pow
         )
 
         def get_random_value():
@@ -47,7 +48,7 @@ class FuzzingTester:
                 failure_count += 1
                 function, params, arithmetic_result, exception, msg = result
                 print(f"\rfunction call {function.__name__}{params} returned {arithmetic_result} with "
-                      f"error {repr(exception)}" +
+                      f"error {repr(exception)}. " +
                       (f"Additional message: {msg}" if (msg is not None and len(msg) > 0) else ""), flush=True)
 
         print(f"\rdone with {failure_count} test failures out of {self.n * len(functions)} (n times the number of "
@@ -171,6 +172,23 @@ class FuzzingTester:
                 return modarith.mod, (x, k), None, err, "ZeroDivisionError despite k != 0"
         if result != x % k:
             return modarith.mod, (x, k), result, None, ""
+
+    @staticmethod
+    def test_pow(x: int, y: int, k: int):
+        try:
+            result = modarith.mod_pow(x, y, k)
+        except ValueError as err:
+            if k <= 1 or x < 0 or y < 0:
+                return
+            else:
+                return modarith.mod_pow, (x, y, k), None, err, "ValueError despite k > 1, x >= 0 and y >= 0"
+        if x < 0 or y < 0:
+            return modarith.mod_pow, (x, y, k), result, None, "expected ValueError, because x or y < 0"
+        if k <= 1:
+            return modarith.mod_pow, (x, y, k), result, None, "expected ValueError, because k <= 1"
+        real_result = pow(x, y, k)
+        if result != real_result:
+            return modarith.mod_pow, (x, y, k), result, None, f"instead of {real_result}"
 
 
 if __name__ == "__main__":
