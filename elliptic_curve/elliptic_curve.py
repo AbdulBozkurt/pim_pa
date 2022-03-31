@@ -6,14 +6,14 @@ class EllipticCurve:
 
     def __init__(self, a: FiniteFieldElement, b: FiniteFieldElement):
         """Initializes an EllipticCurve by providing it with two parameters of type
-        FiniteFieldElement. Checks first, whether the determinant of the given
+        FiniteFieldElement. Checks first, whether the discriminant of the given
         parameters are not equal to 0. If they are equal to 0, then raise ValueError."""
         e1 = FiniteFieldElement([-1], a.field)
         e2 = FiniteFieldElement([4], a.field)
         e3 = FiniteFieldElement([27], a.field)
-        determinant = e1 * (e2 * (a * a * a) + e3 * (b * b))
+        discriminant = e1 * (e2 * (a * a * a) + e3 * (b * b))
 
-        if determinant.e == 0:
+        if discriminant.e == 0:
             raise ValueError('The determinant -(4{0}^3 + 27{1}^2) equals 0.'.format(a, b))
         self.a = a
         self.b = b
