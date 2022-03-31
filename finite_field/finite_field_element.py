@@ -8,7 +8,7 @@ __all__ = ["FiniteFieldElement"]
 
 class FiniteFieldElement:
 
-    def __init__(self, e, field):
+    def __init__(self, e: list, field: FiniteField):
         if not isinstance(e, list):
             raise ValueError('The given element object is not of type list')
         if not isinstance(field, FiniteField):
@@ -44,7 +44,7 @@ class FiniteFieldElement:
             b.append(0)
         result = list()
         for i, e in enumerate(reversed(b)):
-            result.append(mod.mod((e + a[i]), self.field.p))
+            result.append(mod.mod_add(e, a[i], self.field.p))
         return FiniteFieldElement(result, self.field)
 
     def __sub__(self, other):
@@ -68,10 +68,10 @@ class FiniteFieldElement:
             raise ArithmeticError('Cannot subtract two elements from different finite fields. '
                                   'Given bases were {0} and {1}'.format(self.field, other.field))
         # initialize result polynomial-array with length a + b
-        result = [0 for x in range(len(self.e) + len(other.e) - 1)]
+        result = [0 for _ in range(len(self.e) + len(other.e) - 1)]
         for i, a_element in enumerate(self.e):
             for j, b_element in enumerate(other.e):
-                result[i + j] += a_element * b_element
+                result[i + j] += mod.mod_mul(a_element, b_element, self.field.p)
         return FiniteFieldElement(result, self.field)
 
     def __truediv__(self, other):

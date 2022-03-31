@@ -1,6 +1,16 @@
-import finite_field.prime_numbers as prime_numbers
+import random
 import mod_arith.modarith as mod
 __all__ = ["FiniteField", "get_safe_field", "generate_poly"]
+
+
+def prime_test(p: int) -> bool:
+    """Checks, whether a given integer p is prime"""
+    for i in range(100):
+        a = random.randrange(1, p-1)
+        # TODO change to power from mod_arith
+        if pow(a, p-1, p) != 1:
+            return False
+    return True
 
 
 def clean_list(a: list) -> list:
@@ -14,12 +24,11 @@ def clean_list(a: list) -> list:
     return a
 
 
-def multiply(a, b):
-    # initialize result polynomial-array with length a + b
-    result = [0 for x in range(len(a) + len(b) - 1)]
+def multiply(a: list, b: list, p: int) -> list:
+    result = [0 for _ in range(len(a) + len(b) - 1)]
     for i, a_element in enumerate(a):
         for j, b_element in enumerate(b):
-            result[i+j] += a_element * b_element
+            result[i+j] += mod.mod_mul(a_element, b_element, p)
     return result
 
 
@@ -34,14 +43,14 @@ def add(a: list, b: list, p: int) -> list:
 
     result = list()
     for i, e in enumerate(reversed(b)):
-        result.append(mod.mod((e + a[i]), p))
+        result.append(mod.mod_add(e, a[i], p))
     return result
 
 
 def generate_poly(factors: dict, p: int) -> list:
-    poly = [0 for x in range(max(factors)+1)]
+    poly = [0 for _ in range(max(factors)+1)]
     for i in factors:
-        poly[i] = factors[i] % p
+        poly[i] = mod.mod(factors[i], p)
     return list(reversed(poly))
 
 
@@ -57,7 +66,7 @@ def get_safe_field():
 class FiniteField:
 
     def __init__(self, p: int, poly: list):
-        if not prime_numbers.prime_test(p):
+        if not prime_test(p):
             raise ValueError('The given base {0} is not a prime number.'.format(p))
         self.p = p
         for i, f in enumerate(poly):
@@ -66,10 +75,9 @@ class FiniteField:
         # generate the reducing-polynomial
         r_pol = list()
         for f in poly[1:]:
-            index = mod.mod((-f * pow(poly[0], -1, self.p)), self.p)
+            index = mod.mod_mul(-f, mod.mod_inv(poly[0], self.p), self.p)
             r_pol.append(index)
         self.r_pol = r_pol
-        # TODO maybe check for irreducible polynomial
 
     def __str__(self):
         if not self.poly:
@@ -96,9 +104,9 @@ class FiniteField:
         while len(a) >= len(self.poly):
             factor = a[0]
             a[0] = 0
-            temp = [0 for x in range(len(a))]
+            temp = [0 for _ in range(len(a))]
             temp[len(self.poly) - 1] = factor
-            temp = multiply(temp, self.r_pol)
+            temp = multiply(temp, self.r_pol, self.p)
             a = add(a, temp, self.p)
             a = clean_list(a)
 
