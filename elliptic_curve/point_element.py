@@ -19,11 +19,32 @@ class PointElement:
         self.z = z
         self.curve = curve
 
+    def __eq__(self, other: "PointElement") -> bool:
+        """Checks, whether the point is equal to another one."""
+        return self.x == other.x and self.y == other.y and self.z == other.z and self.curve == other.curve
+
     def __str__(self) -> str:
         if self == self.point_at_infinity():
             return "(Point at Infinity)"
         else:
             return "(Point: (\nx = {0}\ny = {1})".format(self.x, self.y)
+
+    def is_on_curve(self) -> bool:
+        """Checks, whether the point is on its elliptic curve, by inserting them
+        into the curve. If both sides of the equation are not equal,
+        then raise ValueError."""
+        if not self.z.e:
+            return True
+        left = self.y * self.y
+        right = self.x * self.x * self.x + self.curve.a * self.x + self.curve.b
+        return left == right
+
+    def point_at_infinity(self) -> "PointElement":
+        """Returns the point at infinity."""
+        x3 = FiniteFieldElement([0], self.x.field)
+        y3 = FiniteFieldElement([1], self.y.field)
+        z3 = FiniteFieldElement([0], self.z.field)
+        return PointElement(x3, y3, z3, self.curve)
 
     def __add__(self, other: "PointElement") -> "PointElement":
         """Adds two points to retrieve a new one.
@@ -88,18 +109,14 @@ class PointElement:
         else:
             return self.point_at_infinity()
 
-    def __sub__(self, other: "PointElement") -> "PointElement":
-        """Calculates the subtraction of two points."""
-        return self + (-other)
-
     def __neg__(self) -> "PointElement":
         """Calculates the negation of a point by multiplying its y-coordinate with -1."""
         i = FiniteFieldElement([-1], self.y.field)
         return PointElement(self.x, self.y * i, self.z, self.curve)
 
-    def __eq__(self, other: "PointElement") -> bool:
-        """Checks, whether the point is equal to another one."""
-        return self.x == other.x and self.y == other.y and self.z == other.z and self.curve == other.curve
+    def __sub__(self, other: "PointElement") -> "PointElement":
+        """Calculates the subtraction of two points."""
+        return self + (-other)
 
     def __mul__(self, other: int) -> "PointElement":
         """Calculates the scalar product of the point with a given Integer
@@ -128,23 +145,6 @@ class PointElement:
 
     def __rmul__(self, other: int) -> "PointElement":
         return self * other
-
-    def point_at_infinity(self) -> "PointElement":
-        """Returns the point at infinity."""
-        x3 = FiniteFieldElement([0], self.x.field)
-        y3 = FiniteFieldElement([1], self.y.field)
-        z3 = FiniteFieldElement([0], self.z.field)
-        return PointElement(x3, y3, z3, self.curve)
-
-    def is_on_curve(self) -> bool:
-        """Checks, whether the point is on its elliptic curve, by inserting them
-        into the curve. If both sides of the equation are not equal,
-        then raise ValueError."""
-        if not self.z.e:
-            return True
-        left = self.y * self.y
-        right = self.x * self.x * self.x + self.curve.a * self.x + self.curve.b
-        return left == right
 
     def scalar_mul(self, n: int) -> "PointElement":
         """Calculates the scalar product of the point with a given Integer
