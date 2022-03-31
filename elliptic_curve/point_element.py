@@ -44,8 +44,8 @@ class PointElement:
         e1 = FiniteFieldElement([1], self.x.field)
         e2 = FiniteFieldElement([2], self.x.field)
         e3 = FiniteFieldElement([3], self.x.field)
+        # handles point-addition
         if self.x != other.x:
-
             # 14M for addition: 12M + 2S
             y1z2 = self.y * other.z
             x1z2 = self.x * other.z
@@ -64,6 +64,7 @@ class PointElement:
 
             return PointElement(x3*z3, y3*z3, e1, self.curve)
 
+        # handles point-doubling
         elif self == other and self.y != 0:
             # 11M for doubling: 5M + 6S
             xx = self.x * self.x
@@ -83,6 +84,7 @@ class PointElement:
 
             return PointElement(x3 * z3, y3 * z3, e1, self.curve)
 
+        # handles all other cases
         else:
             return self.point_at_infinity()
 
@@ -106,16 +108,18 @@ class PointElement:
             raise ValueError('The given point is not on the curve.')
         if other < 0:
             raise ValueError('n must be a positive integer.')
-
+        # base case
         A = other
         B = self.point_at_infinity()
         C = self
 
         while A != 0:
+            # doubles the current point
             if A % 2 == 0:
                 A = A // 2
                 B = B
                 C = C + C
+            # adds the current point to the result
             elif A % 2 == 1:
                 A = A - 1
                 B = B + C
@@ -126,6 +130,7 @@ class PointElement:
         return self * other
 
     def point_at_infinity(self) -> "PointElement":
+        """Returns the point at infinity."""
         x3 = FiniteFieldElement([0], self.x.field)
         y3 = FiniteFieldElement([1], self.y.field)
         z3 = FiniteFieldElement([0], self.z.field)
