@@ -7,7 +7,6 @@ def prime_test(p: int) -> bool:
     """Checks, whether a given integer p is prime"""
     for i in range(100):
         a = random.randrange(1, p-1)
-        # TODO change to power from mod_arith
         if mod.mod_pow(a, p-1, p) != 1:
             return False
     return True
