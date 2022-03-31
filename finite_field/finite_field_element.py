@@ -9,6 +9,7 @@ __all__ = ["FiniteFieldElement"]
 class FiniteFieldElement:
 
     def __init__(self, e: list, field: FiniteField):
+        """Constructor for FiniteFieldElement-objects"""
         if not isinstance(e, list):
             raise ValueError('The given element object is not of type list')
         if not isinstance(field, FiniteField):
@@ -27,6 +28,7 @@ class FiniteFieldElement:
             return "(Element: {0},\n {1})".format(s[:-7], self.field)
 
     def __add__(self, other):
+        """Overloading the "+"-operator to be able to add two objects of this class"""
         if not isinstance(other, FiniteFieldElement):
             raise ValueError('Tried to add a object that is not of type FiniteFieldElement but of type: {0}'
                              .format(type(other)))
@@ -48,6 +50,7 @@ class FiniteFieldElement:
         return FiniteFieldElement(result, self.field)
 
     def __sub__(self, other):
+        """Overloading the "-"-operator to be able to subtract two objects of this class"""
         if not isinstance(other, FiniteFieldElement):
             raise ValueError('Tried to add a object that is not of type FiniteFieldElement but of type: {0}'
                              .format(type(other)))
@@ -61,6 +64,7 @@ class FiniteFieldElement:
         return self + other
 
     def __mul__(self, other):
+        """Overloading the "*"-operator to be able to multiply two objects of this class"""
         if not isinstance(other, FiniteFieldElement):
             raise ValueError('Tried to add a object that is not of type FiniteFiledElement but of type: {0}'
                              .format(type(other)))
@@ -75,6 +79,7 @@ class FiniteFieldElement:
         return FiniteFieldElement(result, self.field)
 
     def __truediv__(self, other):
+        """Overloading the "/"-operator to be able to divide two objects of this class"""
         if not isinstance(other, FiniteFieldElement):
             raise ValueError('Tried to add a object that is not of type FiniteFiledElement but of type: {0}'
                              .format(type(other)))
@@ -86,6 +91,7 @@ class FiniteFieldElement:
         return inverse * self
 
     def __eq__(self, other):
+        """Overloading the "="-operator to be able to compare two objects of this class"""
         if isinstance(other, int):
             if other == 0:
                 return len(self.e) == 0

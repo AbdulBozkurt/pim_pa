@@ -24,6 +24,7 @@ def clean_list(a: list) -> list:
 
 
 def multiply(a: list, b: list, p: int) -> list:
+    """Multiplies two given polynomials with the factors modulo p"""
     result = [0] * (len(a) + len(b) - 1)
     for i, a_element in enumerate(a):
         for j, b_element in enumerate(b):
@@ -32,6 +33,7 @@ def multiply(a: list, b: list, p: int) -> list:
 
 
 def add(a: list, b: list, p: int) -> list:
+    """Adds two given polynomials with the factors modulo p"""
     if len(a) < len(b):
         temp = b.copy()
         b = a.copy()
@@ -47,6 +49,8 @@ def add(a: list, b: list, p: int) -> list:
 
 
 def generate_poly(factors: dict, p: int) -> list:
+    """Generates a list defining a polynomial from a dictionary giving the factors at specific points
+        and a prime number p to calculate the modulo from"""
     poly = [0 for _ in range(max(factors)+1)]
     for i in factors:
         poly[i] = mod.mod(factors[i], p)
@@ -65,6 +69,7 @@ def get_safe_field():
 class FiniteField:
 
     def __init__(self, p: int, poly: list):
+        """Constructor for FiniteField-objects"""
         if not prime_test(p):
             raise ValueError('The given base {0} is not a prime number.'.format(p))
         self.p = p
@@ -89,6 +94,7 @@ class FiniteField:
             return "Field: (Base: {0}, Poly: {1})".format(self.p, s[:-7])
 
     def __eq__(self, other):
+        """Overloading the "="-operator to be able to compare two objects of this class"""
         if not isinstance(other, FiniteField):
             return False
         for i, j in zip(self.poly, other.poly):
@@ -97,6 +103,7 @@ class FiniteField:
         return self.p == other.p
 
     def reduce_poly(self, a: list):
+        """Reduces a given polynomial using the polynomial defining the current FiniteField"""
         # clean the given lists of leading zeros
         a = (clean_list(a))
 
